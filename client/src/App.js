@@ -50,7 +50,7 @@ function App() {
     <AuthProvider>
       <ThemeProvider>
         <AssistantProvider>
-          <Router basename={process.env.PUBLIC_URL}>
+          <Router>
             <div className="App">
             <Suspense fallback={<LoadingFallback />}>
               <Routes>

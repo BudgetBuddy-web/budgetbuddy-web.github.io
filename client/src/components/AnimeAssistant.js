@@ -86,7 +86,7 @@ const AnimeAssistant = () => {
         appRef.current = app;
 
         // Load Live2D model with optimized settings
-        const modelPath = `${process.env.PUBLIC_URL}/akari_vts/akari.model3.json`;
+        const modelPath = `/akari_vts/akari.model3.json`;
         const model = await Live2D.from(modelPath, {
           autoInteract: false,  // Disable auto-interaction (causes errors in PixiJS 7)
           autoUpdate: true,
