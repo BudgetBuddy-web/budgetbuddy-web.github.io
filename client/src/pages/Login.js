@@ -116,6 +116,11 @@ const Login = () => {
 
       {/* Anime Assistant */}
       <AnimeAssistant />
+      
+      {/* Footer */}
+      <footer className="app-footer">
+        <p>Created by <strong>DAVID OLIVER J</strong> | URK23CS1305</p>
+      </footer>
     </div>
   );
 };
