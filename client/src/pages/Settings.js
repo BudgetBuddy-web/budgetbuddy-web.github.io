@@ -19,6 +19,9 @@ const Settings = () => {
     name: user?.name || '',
     profilePic: user?.profilePic || ''
   });
+  const [useNameAvatar, setUseNameAvatar] = useState(
+    !user?.profilePic || user?.profilePic.includes('ui-avatars.com')
+  );
   const [savingsGoal, setSavingsGoal] = useState(user?.savingsGoal || 5000);
   const [settings, setSettings] = useState({
     assistantPersonality: user?.assistantPersonality || 'cheerful',
@@ -35,7 +38,15 @@ const Settings = () => {
     setLoading({ ...loading, profile: true });
 
     try {
-      const response = await userAPI.updateProfile(profileData);
+      // Generate avatar URL if using name avatar
+      const updatedProfileData = {
+        ...profileData,
+        profilePic: useNameAvatar 
+          ? `https://ui-avatars.com/api/?name=${encodeURIComponent(profileData.name)}&background=random&size=200`
+          : profileData.profilePic
+      };
+
+      const response = await userAPI.updateProfile(updatedProfileData);
       updateUser(response.data.user);
       toast.success('Profile updated successfully');
     } catch (error) {
@@ -149,25 +160,58 @@ const Settings = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Profile Picture URL</label>
-              <input
-                type="url"
-                value={profileData.profilePic}
-                onChange={(e) => setProfileData({ ...profileData, profilePic: e.target.value })}
-                className="form-control"
-                placeholder="https://example.com/avatar.jpg"
-              />
+              <label className="form-label">Profile Picture</label>
+              <div className="avatar-options">
+                <label className="radio-option">
+                  <input
+                    type="radio"
+                    name="avatarType"
+                    checked={useNameAvatar}
+                    onChange={() => setUseNameAvatar(true)}
+                  />
+                  <span>Use name initials (auto-generated)</span>
+                </label>
+                <label className="radio-option">
+                  <input
+                    type="radio"
+                    name="avatarType"
+                    checked={!useNameAvatar}
+                    onChange={() => setUseNameAvatar(false)}
+                  />
+                  <span>Use custom image URL</span>
+                </label>
+              </div>
             </div>
+
+            {!useNameAvatar && (
+              <div className="form-group">
+                <label className="form-label">Profile Picture URL</label>
+                <input
+                  type="url"
+                  value={profileData.profilePic}
+                  onChange={(e) => setProfileData({ ...profileData, profilePic: e.target.value })}
+                  className="form-control"
+                  placeholder="https://example.com/avatar.jpg"
+                />
+              </div>
+            )}
 
             <div className="profile-preview">
               <img 
-                src={profileData.profilePic} 
+                src={
+                  useNameAvatar 
+                    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(profileData.name || 'User')}&background=random&size=200`
+                    : profileData.profilePic
+                } 
                 alt="Profile" 
                 className="preview-image"
                 onError={(e) => {
-                  e.target.src = 'https://ui-avatars.com/api/?name=User&background=random';
+                  e.target.src = 'https://ui-avatars.com/api/?name=User&background=random&size=200';
                 }}
               />
+              <small className="form-text">
+                {useNameAvatar ? 'Auto-generated from your name' : 'Preview of your profile picture'}
+              </small>
             </div>
 
             <button 
