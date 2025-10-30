@@ -1,0 +1,28 @@
+{
+  "name": "budgetbuddy",
+  "version": "1.0.0",
+  "description": "Interactive Expense Tracker with Anime Assistant",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "cd server && npm install && cd ../client && npm install",
+    "seed": "cd server && node utils/seed.js",
+    "server": "cd server && npm start",
+    "client": "cd client && npm start",
+    "dev": "echo 'Run these commands in separate terminals:' && echo '  npm run server' && echo '  npm run client'"
+  },
+  "keywords": [
+    "budget",
+    "expense-tracker",
+    "finance",
+    "anime",
+    "react",
+    "nodejs",
+    "mongodb"
+  ],
+  "author": "David Oliver",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/budgetbuddy"
+  }
+}

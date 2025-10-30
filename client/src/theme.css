@@ -1,0 +1,347 @@
+/**
+ * Dark Theme Styles
+ * Global dark theme CSS variables and overrides
+ */
+
+/* CSS Variables for Light Theme (Default) */
+:root,
+.light-theme {
+  --bg-primary: #f5f7fa;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f8f9fa;
+  --bg-hover: #e9ecef;
+  
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  
+  --border-color: #e1e8ed;
+  --border-hover: #d1d8dd;
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.2);
+  
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-success: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+  --gradient-danger: linear-gradient(90deg, #dc3545 0%, #c82333 100%);
+  
+  --navbar-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --navbar-text: #ffffff;
+}
+
+/* CSS Variables for Dark Theme */
+.dark-theme {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-tertiary: #0f1629;
+  --bg-hover: #1f2937;
+  
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --text-tertiary: #6b7280;
+  
+  --border-color: #374151;
+  --border-hover: #4b5563;
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
+  
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-success: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  --gradient-danger: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+  
+  --navbar-bg: linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%);
+  --navbar-text: #e5e7eb;
+}
+
+/* Apply theme to body */
+.dark-theme body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Cards */
+.dark-theme .card,
+.dark-theme .stat-card,
+.dark-theme .auth-container,
+.dark-theme .modal-content,
+.dark-theme .summary-card {
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.dark-theme .card:hover,
+.dark-theme .stat-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Text */
+.dark-theme h1,
+.dark-theme h2,
+.dark-theme h3,
+.dark-theme h4,
+.dark-theme .card-title,
+.dark-theme .section-title,
+.dark-theme .stat-label,
+.dark-theme .category-name,
+.dark-theme .transaction-category {
+  color: var(--text-primary);
+}
+
+.dark-theme p,
+.dark-theme .stat-label,
+.dark-theme .transaction-note,
+.dark-theme .form-text,
+.dark-theme .progress-info,
+.dark-theme .category-percentage {
+  color: var(--text-secondary);
+}
+
+/* Forms */
+.dark-theme .form-control,
+.dark-theme .form-select {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.dark-theme .form-control:focus,
+.dark-theme .form-select:focus {
+  background-color: var(--bg-secondary);
+  border-color: #667eea;
+}
+
+.dark-theme .form-control::placeholder {
+  color: var(--text-tertiary);
+}
+
+.dark-theme .form-control:disabled {
+  background-color: var(--bg-hover);
+  color: var(--text-tertiary);
+}
+
+/* Navbar */
+.dark-theme .navbar {
+  background: var(--navbar-bg);
+}
+
+.dark-theme .nav-link {
+  color: rgba(229, 231, 235, 0.9);
+}
+
+.dark-theme .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--navbar-text);
+}
+
+.dark-theme .nav-link.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--navbar-text);
+}
+
+/* Tables */
+.dark-theme .transactions-table {
+  color: var(--text-primary);
+}
+
+.dark-theme .transactions-table th {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-bottom-color: var(--border-color);
+}
+
+.dark-theme .transactions-table td {
+  border-bottom-color: var(--border-color);
+}
+
+.dark-theme .transaction-item {
+  background: var(--bg-tertiary);
+}
+
+.dark-theme .transaction-item:hover {
+  background: var(--bg-hover);
+}
+
+/* Buttons */
+.dark-theme .btn-secondary {
+  background: #4b5563;
+  color: var(--text-primary);
+}
+
+.dark-theme .btn-secondary:hover {
+  background: #6b7280;
+}
+
+.dark-theme .btn-outline {
+  border-color: #667eea;
+  color: #818cf8;
+}
+
+.dark-theme .btn-outline:hover {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: #818cf8;
+}
+
+/* Progress Bar */
+.dark-theme .progress-bar {
+  background: var(--bg-tertiary);
+}
+
+/* Insights & Lists */
+.dark-theme .insights-list li,
+.dark-theme .budget-info,
+.dark-theme .account-stats .stat-item {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Badges */
+.dark-theme .badge.income {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.dark-theme .badge.expense {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+/* Modal */
+.dark-theme .modal-overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.dark-theme .modal-header {
+  border-bottom-color: var(--border-color);
+}
+
+/* Assistant */
+.dark-theme .message-bubble {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.dark-theme .message-bubble::after {
+  border-top-color: var(--bg-secondary);
+}
+
+/* Auth Pages */
+.dark-theme .auth-page {
+  background: linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%);
+}
+
+.dark-theme .auth-divider::before {
+  background: var(--border-color);
+}
+
+.dark-theme .auth-divider span {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+/* Stat Cards - Special handling for icons */
+.dark-theme .stat-card.income .stat-icon {
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.dark-theme .stat-card.expense .stat-icon {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.dark-theme .stat-card.balance .stat-icon {
+  background: rgba(102, 126, 234, 0.15);
+}
+
+.dark-theme .stat-card.budget .stat-icon {
+  background: rgba(245, 158, 11, 0.15);
+}
+
+/* Amount Colors */
+.dark-theme .amount.income,
+.dark-theme .stat-card.income .stat-value,
+.dark-theme .transaction-amount.income {
+  color: #34d399;
+}
+
+.dark-theme .amount.expense,
+.dark-theme .stat-card.expense .stat-value,
+.dark-theme .transaction-amount.expense {
+  color: #f87171;
+}
+
+.dark-theme .stat-card.balance .stat-value {
+  color: #818cf8;
+}
+
+.dark-theme .stat-card.budget .stat-value {
+  color: #fbbf24;
+}
+
+/* Category Bar */
+.dark-theme .category-bar {
+  background: var(--bg-tertiary);
+}
+
+.dark-theme .category-fill {
+  background: linear-gradient(90deg, #818cf8 0%, #a78bfa 100%);
+}
+
+/* Empty States */
+.dark-theme .empty-state {
+  color: var(--text-secondary);
+}
+
+/* Loading */
+.dark-theme .loading {
+  color: #818cf8;
+}
+
+.dark-theme .spinner {
+  border-color: var(--bg-tertiary);
+  border-top-color: #818cf8;
+}
+
+/* Google Button */
+.dark-theme .btn-google {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.dark-theme .btn-google:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+}
+
+/* Scrollbar (Webkit browsers) */
+.dark-theme ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.dark-theme ::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+.dark-theme ::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 5px;
+}
+
+.dark-theme ::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
+
+/* Smooth transitions */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Prevent transition on page load */
+.preload * {
+  transition: none !important;
+}

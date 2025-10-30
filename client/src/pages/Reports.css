@@ -1,0 +1,99 @@
+.reports-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.period-selector {
+  display: grid;
+  grid-template-columns: 200px 200px 1fr;
+  gap: 16px;
+  align-items: end;
+}
+
+.export-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card h3 {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.summary-card .amount {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.category-amount {
+  font-weight: 700;
+  color: #dc3545;
+}
+
+.category-bar {
+  width: 100%;
+  height: 8px;
+  background: #e1e8ed;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.category-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.category-percentage {
+  font-size: 14px;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .period-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .export-buttons {
+    justify-content: stretch;
+  }
+
+  .export-buttons .btn {
+    flex: 1;
+  }
+}
