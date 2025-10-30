@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const auth = require('../middleware/auth');
+const { dbLimiter } = require('../middleware/rateLimiter');
 const Budget = require('../models/Budget');
 
 // Get all budgets for user
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, dbLimiter, async (req, res) => {
   try {
     const budgets = await Budget.find({ user: req.user._id })
       .sort({ createdAt: -1 });
@@ -18,7 +19,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 // Get budget by ID
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', auth, dbLimiter, async (req, res) => {
   try {
     const budget = await Budget.findOne({
       _id: req.params.id,
@@ -39,10 +40,11 @@ router.get('/:id', auth, async (req, res) => {
 // Create budget
 router.post('/', [
   auth,
-  body('name').notEmpty().trim(),
+  dbLimiter,
+  body('name').notEmpty().trim().escape(),
   body('targetAmount').isFloat({ min: 0 }),
   body('currentAmount').optional().isFloat({ min: 0 }),
-  body('category').optional().trim(),
+  body('category').optional().trim().escape(),
   body('deadline').optional().isISO8601(),
   body('type').optional().isIn(['savings', 'budget'])
 ], async (req, res) => {
@@ -53,7 +55,12 @@ router.post('/', [
     }
 
     const budget = new Budget({
-      ...req.body,
+      name: req.body.name,
+      targetAmount: req.body.targetAmount,
+      currentAmount: req.body.currentAmount,
+      category: req.body.category,
+      deadline: req.body.deadline,
+      type: req.body.type,
       user: req.user._id
     });
 
@@ -68,10 +75,11 @@ router.post('/', [
 // Update budget
 router.put('/:id', [
   auth,
-  body('name').optional().trim(),
+  dbLimiter,
+  body('name').optional().trim().escape(),
   body('targetAmount').optional().isFloat({ min: 0 }),
   body('currentAmount').optional().isFloat({ min: 0 }),
-  body('category').optional().trim(),
+  body('category').optional().trim().escape(),
   body('deadline').optional().isISO8601(),
   body('type').optional().isIn(['savings', 'budget'])
 ], async (req, res) => {
@@ -81,9 +89,18 @@ router.put('/:id', [
       return res.status(400).json({ errors: errors.array() });
     }
 
+    // Build update object with validated fields only
+    const updateFields = {};
+    if (req.body.name) updateFields.name = req.body.name;
+    if (req.body.targetAmount !== undefined) updateFields.targetAmount = req.body.targetAmount;
+    if (req.body.currentAmount !== undefined) updateFields.currentAmount = req.body.currentAmount;
+    if (req.body.category) updateFields.category = req.body.category;
+    if (req.body.deadline) updateFields.deadline = req.body.deadline;
+    if (req.body.type) updateFields.type = req.body.type;
+
     const budget = await Budget.findOneAndUpdate(
       { _id: req.params.id, user: req.user._id },
-      req.body,
+      updateFields,
       { new: true }
     );
 
@@ -99,7 +116,7 @@ router.put('/:id', [
 });
 
 // Delete budget
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', auth, dbLimiter, async (req, res) => {
   try {
     const budget = await Budget.findOneAndDelete({
       _id: req.params.id,

@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const auth = require('../middleware/auth');
+const { dbLimiter } = require('../middleware/rateLimiter');
 const Expense = require('../models/Expense');
 
 // Get all expenses for user
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, dbLimiter, async (req, res) => {
   try {
     const expenses = await Expense.find({ user: req.user._id })
       .sort({ date: -1 });
@@ -18,7 +19,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 // Get expense by ID
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', auth, dbLimiter, async (req, res) => {
   try {
     const expense = await Expense.findOne({
       _id: req.params.id,
@@ -39,10 +40,11 @@ router.get('/:id', auth, async (req, res) => {
 // Create expense
 router.post('/', [
   auth,
+  dbLimiter,
   body('type').isIn(['income', 'expense']),
-  body('category').notEmpty().trim(),
+  body('category').notEmpty().trim().escape(),
   body('amount').isFloat({ min: 0 }),
-  body('description').optional().trim(),
+  body('description').optional().trim().escape(),
   body('date').optional().isISO8601()
 ], async (req, res) => {
   try {
@@ -53,7 +55,11 @@ router.post('/', [
     }
 
     const expense = new Expense({
-      ...req.body,
+      type: req.body.type,
+      category: req.body.category,
+      amount: req.body.amount,
+      description: req.body.description,
+      date: req.body.date,
       user: req.user._id
     });
 
@@ -68,10 +74,11 @@ router.post('/', [
 // Update expense
 router.put('/:id', [
   auth,
+  dbLimiter,
   body('type').optional().isIn(['income', 'expense']),
-  body('category').optional().trim(),
+  body('category').optional().trim().escape(),
   body('amount').optional().isFloat({ min: 0 }),
-  body('description').optional().trim(),
+  body('description').optional().trim().escape(),
   body('date').optional().isISO8601()
 ], async (req, res) => {
   try {
@@ -80,9 +87,17 @@ router.put('/:id', [
       return res.status(400).json({ errors: errors.array() });
     }
 
+    // Build update object with validated fields only
+    const updateFields = {};
+    if (req.body.type) updateFields.type = req.body.type;
+    if (req.body.category) updateFields.category = req.body.category;
+    if (req.body.amount !== undefined) updateFields.amount = req.body.amount;
+    if (req.body.description !== undefined) updateFields.description = req.body.description;
+    if (req.body.date) updateFields.date = req.body.date;
+
     const expense = await Expense.findOneAndUpdate(
       { _id: req.params.id, user: req.user._id },
-      req.body,
+      updateFields,
       { new: true }
     );
 
@@ -98,7 +113,7 @@ router.put('/:id', [
 });
 
 // Delete expense
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', auth, dbLimiter, async (req, res) => {
   try {
     const expense = await Expense.findOneAndDelete({
       _id: req.params.id,
@@ -117,7 +132,7 @@ router.delete('/:id', auth, async (req, res) => {
 });
 
 // Get summary statistics
-router.get('/stats/summary', auth, async (req, res) => {
+router.get('/stats/summary', auth, dbLimiter, async (req, res) => {
   try {
     const expenses = await Expense.find({ user: req.user._id });
     

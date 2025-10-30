@@ -6,12 +6,16 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const expenseRoutes = require('./routes/expenses');
 const budgetRoutes = require('./routes/budgets');
+const { apiLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Apply rate limiting to all API routes
+app.use('/api/', apiLimiter);
 
 // Routes
 app.use('/api/auth', authRoutes);

@@ -3,10 +3,11 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
+const { authLimiter } = require('../middleware/rateLimiter');
 
 // Register
-router.post('/register', [
-  body('name').notEmpty().trim(),
+router.post('/register', authLimiter, [
+  body('name').notEmpty().trim().escape(),
   body('email').isEmail().normalizeEmail(),
   body('password').isLength({ min: 6 })
 ], async (req, res) => {
@@ -19,14 +20,14 @@ router.post('/register', [
 
     const { name, email, password } = req.body;
 
-    // Check if user exists
-    let user = await User.findOne({ email });
+    // Check if user exists - sanitize email input
+    let user = await User.findOne({ email: email.toLowerCase() });
     if (user) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
     // Create user
-    user = new User({ name, email, password });
+    user = new User({ name, email: email.toLowerCase(), password });
     await user.save();
 
     // Create token
@@ -51,7 +52,7 @@ router.post('/register', [
 });
 
 // Login
-router.post('/login', [
+router.post('/login', authLimiter, [
   body('email').isEmail().normalizeEmail(),
   body('password').notEmpty()
 ], async (req, res) => {
@@ -64,8 +65,8 @@ router.post('/login', [
 
     const { email, password } = req.body;
 
-    // Check if user exists
-    const user = await User.findOne({ email });
+    // Check if user exists - sanitize email input
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
