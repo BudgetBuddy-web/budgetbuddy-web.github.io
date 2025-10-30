@@ -3,8 +3,8 @@ name: Deploy React App to Pages
 
 on:
   push:
-    branches: ["main"]
-  workflow_dispatch:
+    branches: ["main"]    # Trigger deployment when pushing to main
+  workflow_dispatch:       # Allow manual trigger
 
 permissions:
   contents: read
@@ -28,19 +28,19 @@ jobs:
         with:
           node-version: 18
 
-      # ✅ Corrected path (only one Budget-Buddy folder)
+      # 👇 Correct working directory for your structure
       - name: Install dependencies
-        working-directory: ./Budget-Buddy/client
+        working-directory: ./client
         run: npm install
 
       - name: Build React app
-        working-directory: ./Budget-Buddy/client
+        working-directory: ./client
         run: npm run build
 
       - name: Upload build folder as artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./Budget-Buddy/client/build
+          path: ./client/build
 
   deploy:
     needs: build
