@@ -75,9 +75,9 @@ out
 .nuxt
 dist
 
-# Gatsby files
-.cache/
-public
+# Gatsby files (not applicable to this React project)
+# .cache/
+# public
 
 # vuepress
 .vuepress/dist
