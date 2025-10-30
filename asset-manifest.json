@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Budget-Buddy/static/css/main.cbefec5e.css",
-    "main.js": "/Budget-Buddy/static/js/main.6995bf33.js",
+    "main.js": "/Budget-Buddy/static/js/main.a0e3fb07.js",
     "static/css/37.c0ae2710.chunk.css": "/Budget-Buddy/static/css/37.c0ae2710.chunk.css",
     "static/js/37.132c8d83.chunk.js": "/Budget-Buddy/static/js/37.132c8d83.chunk.js",
     "static/css/787.d257bcb8.chunk.css": "/Budget-Buddy/static/css/787.d257bcb8.chunk.css",
@@ -20,7 +20,7 @@
     "static/js/58.28187470.chunk.js": "/Budget-Buddy/static/js/58.28187470.chunk.js",
     "index.html": "/Budget-Buddy/index.html",
     "main.cbefec5e.css.map": "/Budget-Buddy/static/css/main.cbefec5e.css.map",
-    "main.6995bf33.js.map": "/Budget-Buddy/static/js/main.6995bf33.js.map",
+    "main.a0e3fb07.js.map": "/Budget-Buddy/static/js/main.a0e3fb07.js.map",
     "37.c0ae2710.chunk.css.map": "/Budget-Buddy/static/css/37.c0ae2710.chunk.css.map",
     "37.132c8d83.chunk.js.map": "/Budget-Buddy/static/js/37.132c8d83.chunk.js.map",
     "787.d257bcb8.chunk.css.map": "/Budget-Buddy/static/css/787.d257bcb8.chunk.css.map",
@@ -38,6 +38,6 @@
   },
   "entrypoints": [
     "static/css/main.cbefec5e.css",
-    "static/js/main.6995bf33.js"
+    "static/js/main.a0e3fb07.js"
   ]
 }
