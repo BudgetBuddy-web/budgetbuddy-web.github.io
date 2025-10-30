@@ -23,7 +23,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "REACT_APP_API_URL=https://budget-buddy-h1k2.onrender.com/api react-scripts build",
+    "build": "cross-env REACT_APP_API_URL=https://budget-buddy-h1k2.onrender.com/api react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
@@ -48,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "gh-pages": "^6.3.0"
   }
 }
