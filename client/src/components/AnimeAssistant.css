@@ -253,3 +253,46 @@
     font-size: 16px;
   }
 }
+
+/* Landscape mode on mobile - make it tiny */
+@media (max-height: 500px) and (orientation: landscape) {
+  .anime-assistant {
+    bottom: 2px;
+    right: 4px;
+  }
+
+  .message-bubble {
+    max-width: 100px;
+    font-size: 9px;
+    padding: 4px 8px;
+  }
+
+  .assistant-character {
+    width: 80px;
+    height: 110px;
+  }
+
+  .assistant-character canvas {
+    width: 70px !important;
+    height: 100px !important;
+  }
+
+  .assistant-close {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    top: -6px;
+    right: -6px;
+  }
+
+  .assistant-toggle {
+    width: 32px;
+    height: 32px;
+    bottom: 2px;
+    right: 4px;
+  }
+
+  .toggle-icon {
+    font-size: 14px;
+  }
+}
