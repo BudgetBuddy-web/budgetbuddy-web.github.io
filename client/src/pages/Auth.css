@@ -107,20 +107,22 @@
 /* App Footer for Auth Pages */
 .auth-page .app-footer {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
   text-align: center;
-  padding: 16px 24px;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  padding: 12px 32px;
+  border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
   z-index: 10;
+  max-width: 90%;
 }
 
 .auth-page .app-footer p {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: 0.5px;
 }
 
@@ -132,10 +134,10 @@
 
 @media (max-width: 768px) {
   .auth-page .app-footer {
-    padding: 12px 16px;
+    padding: 10px 24px;
   }
   
   .auth-page .app-footer p {
-    font-size: 12px;
+    font-size: 11px;
   }
 }

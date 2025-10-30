@@ -16,14 +16,16 @@
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
   text-align: center;
-  padding: 16px 24px;
-  margin-top: auto;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  padding: 12px 24px;
+  margin: 20px auto 16px;
+  max-width: 500px;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .app-footer p {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: 0.5px;
 }
 
