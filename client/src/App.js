@@ -16,6 +16,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 // Eager load auth pages (small, needed immediately)
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -57,6 +58,7 @@ function App() {
                 {/* Public Routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
 
                 {/* Protected Routes */}
                 <Route element={<PrivateRoute />}>

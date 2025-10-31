@@ -1,0 +1,17 @@
+name: Issue Templates
+about: Choose the appropriate template for your issue
+title: ''
+labels: ''
+assignees: ''
+
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/yourusername/budgetbuddy/tree/main
+    about: Check out our comprehensive documentation
+  - name: 💬 Discussions
+    url: https://github.com/yourusername/budgetbuddy/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 🐛 Security Issues
+    url: https://github.com/yourusername/budgetbuddy/security/advisories/new
+    about: Report security vulnerabilities privately

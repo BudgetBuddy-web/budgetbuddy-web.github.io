@@ -78,6 +78,69 @@
   border-color: #d1d8dd;
 }
 
+.auth-links {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.forgot-password-link {
+  color: #667eea;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+  color: #764ba2;
+}
+
+.success-message {
+  text-align: center;
+  padding: 24px;
+  background: #f0f9ff;
+  border-radius: 12px;
+  border: 2px solid #667eea;
+}
+
+.success-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.success-message h3 {
+  color: #333;
+  margin-bottom: 12px;
+  font-size: 24px;
+}
+
+.success-message p {
+  color: #666;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.success-message .note {
+  font-size: 13px;
+  color: #888;
+  margin-top: 16px;
+  margin-bottom: 24px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
+
 .auth-footer {
   text-align: center;
   margin-top: 24px;
