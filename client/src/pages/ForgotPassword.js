@@ -5,8 +5,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 import AnimeAssistant from '../components/AnimeAssistant';
 import './Auth.css';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -18,13 +21,13 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      // Simulate password reset email (in real app, would call API)
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await axios.post(`${API_URL}/auth/forgot-password`, { email });
       
       setEmailSent(true);
-      toast.success('Password reset instructions sent to your email!');
+      toast.success(response.data.message || 'Password reset email sent!');
     } catch (error) {
-      toast.error('Failed to send reset email. Please try again.');
+      const message = error.response?.data?.message || 'Failed to send reset email. Please try again.';
+      toast.error(message);
       console.error(error);
     } finally {
       setLoading(false);
@@ -41,11 +44,6 @@ const ForgotPassword = () => {
               ? 'Check your email for reset instructions' 
               : 'Enter your email to reset your password'}
           </p>
-          {!emailSent && (
-            <div className="demo-notice">
-              ℹ️ <strong>Demo Note:</strong> Email sending is simulated. In production, you would receive a real email.
-            </div>
-          )}
         </div>
 
         {!emailSent ? (
@@ -73,19 +71,18 @@ const ForgotPassword = () => {
         ) : (
           <div className="success-message">
             <div className="success-icon">✉️</div>
-            <h3>Email Sent! (Simulated)</h3>
+            <h3>Email Sent!</h3>
             <p>
-              In a production app, a reset link would be sent to <strong>{email}</strong>
+              We've sent password reset instructions to <strong>{email}</strong>
             </p>
             <p className="note">
-              <strong>⚠️ Demo Mode:</strong> This is a demonstration. No actual email was sent. 
-              To enable real emails, see FORGOT_PASSWORD_SETUP.md for configuration instructions.
+              Please check your inbox and spam folder. The link will expire in 1 hour.
             </p>
             <button 
               onClick={() => setEmailSent(false)} 
               className="btn btn-secondary btn-block"
             >
-              Try Again
+              Send Another Email
             </button>
           </div>
         )}

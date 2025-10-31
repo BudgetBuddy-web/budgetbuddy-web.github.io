@@ -6,6 +6,8 @@
 const User = require('../models/User.model');
 const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
+const crypto = require('crypto');
+const { sendPasswordResetEmail, sendWelcomeEmail } = require('../utils/emailService');
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -45,6 +47,11 @@ exports.register = async (req, res) => {
 
     // Generate token
     const token = generateToken(user._id);
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail(user.email, user.name).catch(err => 
+      console.error('Welcome email failed:', err)
+    );
 
     res.status(201).json({
       success: true,
@@ -230,6 +237,102 @@ exports.getMe = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching user data',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * @route   POST /api/auth/forgot-password
+ * @desc    Send password reset email
+ * @access  Public
+ */
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No user found with this email'
+      });
+    }
+
+    if (user.googleId && !user.password) {
+      return res.status(400).json({
+        success: false,
+        message: 'This account uses Google login. Please sign in with Google.'
+      });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+    
+    user.resetPasswordToken = resetTokenHash;
+    user.resetPasswordExpiry = Date.now() + 3600000;
+    await user.save();
+
+    await sendPasswordResetEmail(email, resetToken);
+
+    res.json({
+      success: true,
+      message: 'Password reset email sent successfully'
+    });
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error sending password reset email',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * @route   POST /api/auth/reset-password
+ * @desc    Reset password with token
+ * @access  Public
+ */
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token and new password are required'
+      });
+    }
+
+    const resetTokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await User.findOne({
+      resetPasswordToken: resetTokenHash,
+      resetPasswordExpiry: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired reset token'
+      });
+    }
+
+    user.password = newPassword;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpiry = null;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Password reset successfully'
+    });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error resetting password',
       error: error.message
     });
   }

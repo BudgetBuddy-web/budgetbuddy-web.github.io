@@ -48,6 +48,14 @@ const userSchema = new mongoose.Schema({
     enum: ['light', 'dark', 'auto'],
     default: 'light'
   },
+  resetPasswordToken: {
+    type: String,
+    default: null
+  },
+  resetPasswordExpiry: {
+    type: Date,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now
