@@ -1,0 +1,1 @@
+(self.webpackChunkbudgetbuddy_client=self.webpackChunkbudgetbuddy_client||[]).push([[253,634],{2634:()=>{}}]);
