@@ -32,6 +32,21 @@
   font-size: 16px;
 }
 
+.demo-notice {
+  margin-top: 16px;
+  padding: 12px;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  color: #856404;
+  font-size: 13px;
+  text-align: left;
+}
+
+.demo-notice strong {
+  color: #664d03;
+}
+
 .auth-form {
   margin-bottom: 24px;
 }

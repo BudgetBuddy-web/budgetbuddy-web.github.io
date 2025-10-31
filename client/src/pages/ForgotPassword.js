@@ -41,6 +41,11 @@ const ForgotPassword = () => {
               ? 'Check your email for reset instructions' 
               : 'Enter your email to reset your password'}
           </p>
+          {!emailSent && (
+            <div className="demo-notice">
+              ℹ️ <strong>Demo Note:</strong> Email sending is simulated. In production, you would receive a real email.
+            </div>
+          )}
         </div>
 
         {!emailSent ? (
@@ -68,18 +73,19 @@ const ForgotPassword = () => {
         ) : (
           <div className="success-message">
             <div className="success-icon">✉️</div>
-            <h3>Email Sent!</h3>
+            <h3>Email Sent! (Simulated)</h3>
             <p>
-              We've sent password reset instructions to <strong>{email}</strong>
+              In a production app, a reset link would be sent to <strong>{email}</strong>
             </p>
             <p className="note">
-              Please check your inbox and spam folder. The link will expire in 1 hour.
+              <strong>⚠️ Demo Mode:</strong> This is a demonstration. No actual email was sent. 
+              To enable real emails, see FORGOT_PASSWORD_SETUP.md for configuration instructions.
             </p>
             <button 
               onClick={() => setEmailSent(false)} 
               className="btn btn-secondary btn-block"
             >
-              Resend Email
+              Try Again
             </button>
           </div>
         )}
