@@ -37,7 +37,7 @@ export const AssistantProvider = ({ children }) => {
     if (!user || isCalculatingRef.current) return;
     
     try {
-      setIsCalculating(true);
+      isCalculatingRef.current = true;
       const transactionsRes = await transactionAPI.getAll();
       const allTransactions = transactionsRes.data;
       
