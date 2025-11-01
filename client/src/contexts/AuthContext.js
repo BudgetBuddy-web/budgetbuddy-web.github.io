@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
   const loadUser = useCallback(async () => {
     try {
       const response = await authAPI.getMe();
-      setUser(response.data.user);
+      setUser(response.data.data.user);
     } catch (error) {
       console.error('Load user error:', error);
       logout();
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     const response = await authAPI.login(credentials);
-    const { user, token } = response.data;
+    const { user, token } = response.data.data;
     setUser(user);
     setToken(token);
     localStorage.setItem('token', token);
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     const response = await authAPI.register(userData);
-    const { user, token } = response.data;
+    const { user, token } = response.data.data;
     setUser(user);
     setToken(token);
     localStorage.setItem('token', token);
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
 
   const googleLogin = async (googleToken) => {
     const response = await authAPI.googleAuth(googleToken);
-    const { user, token } = response.data;
+    const { user, token } = response.data.data;
     setUser(user);
     setToken(token);
     localStorage.setItem('token', token);
