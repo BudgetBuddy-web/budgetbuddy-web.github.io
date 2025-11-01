@@ -3,7 +3,7 @@
  * User profile and app settings
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -33,6 +33,23 @@ const Settings = () => {
     savings: false,
     settings: false
   });
+
+  // Update state when user data changes (after login or hard refresh)
+  useEffect(() => {
+    if (user) {
+      setProfileData({
+        name: user.name || '',
+        profilePic: user.profilePic || ''
+      });
+      setUseNameAvatar(!user.profilePic || user.profilePic.includes('ui-avatars.com'));
+      setSavingsGoal(user.savingsGoal || 5000);
+      setAllTimeGoal(user.allTimeGoal || 20000);
+      setSettings({
+        assistantPersonality: user.assistantPersonality || 'cheerful',
+        theme: user.theme || 'light'
+      });
+    }
+  }, [user]);
 
   const handleSavingsGoalChange = (e) => {
     let value = e.target.value;

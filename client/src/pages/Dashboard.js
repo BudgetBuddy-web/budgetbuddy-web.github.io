@@ -23,31 +23,34 @@ const Dashboard = () => {
   const [viewMode, setViewMode] = useState('current-month'); // 'current-month' or 'all-time'
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [monthlySavingsRate, setMonthlySavingsRate] = useState(0); // For assistant reactions
+  const [monthlyGoalProgress, setMonthlyGoalProgress] = useState(0); // For assistant reactions (percentage of goal achieved)
 
   // Memoize reaction functions to avoid dependency issues
   const triggerReactions = useCallback(() => {
-    // Always use monthly savings rate for reactions
-    const savingsRatePercentage = monthlySavingsRate;
+    // React based on monthly goal progress (percentage of savings goal achieved)
+    const goalProgressPercentage = monthlyGoalProgress;
     
-    // Savings reactions based on savings rate (percentage of income saved)
-    if (savingsRatePercentage >= 60) {
-      // Great savings rate (>= 60% of income saved) - celebrate!
+    // Reactions based on progress toward savings goal
+    if (goalProgressPercentage >= 100) {
+      // Goal exceeded! - celebrate!
       celebrate();
-    } else if (savingsRatePercentage >= 40) {
-      // Good savings rate (40-59% saved) - idle/steady
+    } else if (goalProgressPercentage >= 75) {
+      // Great progress (75-99%) - celebrate
+      celebrate();
+    } else if (goalProgressPercentage >= 50) {
+      // Good progress (50-74%) - idle/steady
       idle();
-    } else if (savingsRatePercentage >= 20) {
-      // Moderate savings rate (20-39% saved) - encourage
+    } else if (goalProgressPercentage >= 25) {
+      // Moderate progress (25-49%) - encourage
       encourage();
-    } else if (savingsRatePercentage >= 5) {
-      // Low savings rate (5-19% saved) - worry
+    } else if (goalProgressPercentage >= 10) {
+      // Low progress (10-24%) - worry
       worry();
     } else {
-      // Very low or negative savings (< 5%) - worry more
+      // Very low progress (< 10%) - worry more
       worry();
     }
-  }, [monthlySavingsRate, celebrate, encourage, idle, worry]);
+  }, [monthlyGoalProgress, celebrate, encourage, idle, worry]);
 
   useEffect(() => {
     loadDashboardData();
@@ -67,7 +70,7 @@ const Dashboard = () => {
       // Set recent transactions
       setRecentTransactions(allTransactions.slice(0, 5));
       
-      // ALWAYS calculate current month's savings rate for assistant reactions
+      // ALWAYS calculate current month's goal progress for assistant reactions
       const currentMonth = new Date().getMonth() + 1;
       const currentYear = new Date().getFullYear();
       const currentMonthStart = new Date(currentYear, currentMonth - 1, 1);
@@ -87,12 +90,15 @@ const Dashboard = () => {
         .reduce((sum, t) => sum + t.amount, 0);
       
       const currentMonthSavings = currentMonthIncome - currentMonthExpenses;
-      const currentMonthSavingsRate = currentMonthIncome > 0 
-        ? (currentMonthSavings / currentMonthIncome) * 100 
+      const monthlySavingsGoal = user?.savingsGoal || 20000;
+      
+      // Calculate goal progress percentage (how much of the goal is achieved)
+      const goalProgress = monthlySavingsGoal > 0 
+        ? (currentMonthSavings / monthlySavingsGoal) * 100 
         : 0;
       
-      // Set monthly savings rate for assistant reactions
-      setMonthlySavingsRate(currentMonthSavingsRate);
+      // Set monthly goal progress for assistant reactions
+      setMonthlyGoalProgress(goalProgress);
       
       // Calculate summary based on view mode
       if (viewMode === 'all-time') {
