@@ -114,10 +114,20 @@ exports.getSummary = async (req, res) => {
  */
 exports.exportCSV = async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, month, year } = req.query;
     
     const query = { userId: req.user._id };
-    if (startDate || endDate) {
+    
+    // Handle month/year filtering
+    if (month && year) {
+      const targetMonth = parseInt(month);
+      const targetYear = parseInt(year);
+      const startOfMonth = new Date(targetYear, targetMonth - 1, 1);
+      const endOfMonth = new Date(targetYear, targetMonth, 0, 23, 59, 59);
+      query.date = { $gte: startOfMonth, $lte: endOfMonth };
+    } 
+    // Handle startDate/endDate filtering (legacy support)
+    else if (startDate || endDate) {
       query.date = {};
       if (startDate) query.date.$gte = new Date(startDate);
       if (endDate) query.date.$lte = new Date(endDate);
@@ -150,10 +160,20 @@ exports.exportCSV = async (req, res) => {
  */
 exports.exportPDF = async (req, res) => {
   try {
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, month, year } = req.query;
     
     const query = { userId: req.user._id };
-    if (startDate || endDate) {
+    
+    // Handle month/year filtering
+    if (month && year) {
+      const targetMonth = parseInt(month);
+      const targetYear = parseInt(year);
+      const startOfMonth = new Date(targetYear, targetMonth - 1, 1);
+      const endOfMonth = new Date(targetYear, targetMonth, 0, 23, 59, 59);
+      query.date = { $gte: startOfMonth, $lte: endOfMonth };
+    } 
+    // Handle startDate/endDate filtering (legacy support)
+    else if (startDate || endDate) {
       query.date = {};
       if (startDate) query.date.$gte = new Date(startDate);
       if (endDate) query.date.$lte = new Date(endDate);
