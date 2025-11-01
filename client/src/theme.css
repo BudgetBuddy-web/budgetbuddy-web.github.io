@@ -198,6 +198,84 @@
   color: var(--text-primary);
 }
 
+/* Settings Page - Info Items */
+.dark-theme .info-item {
+  color: var(--text-primary);
+}
+
+.dark-theme .info-label {
+  color: var(--text-secondary);
+}
+
+.dark-theme .info-value {
+  color: var(--text-primary);
+}
+
+.dark-theme .stat-label {
+  color: var(--text-secondary);
+}
+
+.dark-theme .stat-value {
+  color: var(--text-primary);
+}
+
+/* Settings Page - Radio Options */
+.dark-theme .radio-option {
+  border-color: var(--border-color);
+  background: var(--bg-tertiary);
+}
+
+.dark-theme .radio-option:hover {
+  border-color: #818cf8;
+  background: var(--bg-hover);
+}
+
+.dark-theme .radio-option span {
+  color: var(--text-primary);
+}
+
+.dark-theme .radio-option input[type="radio"]:checked + span {
+  color: #818cf8;
+}
+
+/* Settings Page - Profile Preview */
+.dark-theme .preview-image {
+  border-color: var(--border-color);
+}
+
+/* Settings Page - Danger Zone */
+.dark-theme .danger-zone {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+}
+
+.dark-theme .danger-zone .section-title {
+  color: #f87171;
+  border-bottom-color: #ef4444;
+}
+
+.dark-theme .warning-text {
+  color: #fca5a5;
+}
+
+.dark-theme .warning-list {
+  background: var(--bg-tertiary);
+  border-left-color: #ef4444;
+}
+
+.dark-theme .warning-list li {
+  color: #fca5a5;
+}
+
+/* Page Headers */
+.dark-theme .page-header h1 {
+  color: var(--text-primary);
+}
+
+.dark-theme .page-header p {
+  color: var(--text-secondary);
+}
+
 /* Badges */
 .dark-theme .badge.income {
   background: rgba(16, 185, 129, 0.2);
