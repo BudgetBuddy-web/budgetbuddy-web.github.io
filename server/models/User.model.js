@@ -34,6 +34,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 5000
   },
+  allTimeGoal: {
+    type: Number,
+    default: 20000
+  },
   profilePic: {
     type: String,
     default: 'https://ui-avatars.com/api/?name=User&background=random'

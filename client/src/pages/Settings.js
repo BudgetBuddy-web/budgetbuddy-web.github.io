@@ -23,6 +23,7 @@ const Settings = () => {
     !user?.profilePic || user?.profilePic.includes('ui-avatars.com')
   );
   const [savingsGoal, setSavingsGoal] = useState(user?.savingsGoal || 5000);
+  const [allTimeGoal, setAllTimeGoal] = useState(user?.allTimeGoal || 20000);
   const [settings, setSettings] = useState({
     assistantPersonality: user?.assistantPersonality || 'cheerful',
     theme: user?.theme || 'light'
@@ -58,6 +59,31 @@ const Settings = () => {
     setSavingsGoal(value === '' ? '' : parseFloat(value) || 0);
   };
 
+  const handleAllTimeGoalChange = (e) => {
+    let value = e.target.value;
+    
+    // Remove any non-numeric characters except decimal point
+    value = value.replace(/[^\d.]/g, '');
+    
+    // Prevent multiple decimal points
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+    
+    // Limit to 7 digits before decimal point
+    if (parts[0] && parts[0].length > 7) {
+      value = parts[0].slice(0, 7) + (parts[1] ? '.' + parts[1] : '');
+    }
+    
+    // Limit to 2 decimal places
+    if (parts[1] && parts[1].length > 2) {
+      value = parts[0] + '.' + parts[1].slice(0, 2);
+    }
+    
+    setAllTimeGoal(value === '' ? '' : parseFloat(value) || 0);
+  };
+
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setLoading({ ...loading, profile: true });
@@ -87,23 +113,34 @@ const Settings = () => {
     
     // Validate savings goal
     if (isNaN(savingsGoal) || savingsGoal <= 0) {
-      toast.error('Please enter a valid savings goal greater than 0');
+      toast.error('Please enter a valid monthly savings goal greater than 0');
       return;
     }
     
     if (savingsGoal > 9999999.99) {
-      toast.error('Savings goal cannot exceed 9,999,999.99');
+      toast.error('Monthly savings goal cannot exceed 9,999,999.99');
+      return;
+    }
+
+    // Validate all-time goal
+    if (isNaN(allTimeGoal) || allTimeGoal <= 0) {
+      toast.error('Please enter a valid all-time goal greater than 0');
+      return;
+    }
+    
+    if (allTimeGoal > 9999999.99) {
+      toast.error('All-time goal cannot exceed 9,999,999.99');
       return;
     }
     
     setLoading({ ...loading, savings: true });
 
     try {
-      await userAPI.updateBudget({ savingsGoal });
-      updateUser({ savingsGoal });
-      toast.success('Savings goal updated successfully');
+      await userAPI.updateBudget({ savingsGoal, allTimeGoal });
+      updateUser({ savingsGoal, allTimeGoal });
+      toast.success('Savings goals updated successfully');
     } catch (error) {
-      toast.error('Failed to update savings goal');
+      toast.error('Failed to update savings goals');
       console.error(error);
     } finally {
       setLoading({ ...loading, savings: false });
@@ -263,7 +300,7 @@ const Settings = () => {
 
         {/* Savings Settings */}
         <div className="card">
-          <h2 className="section-title">🎯 Savings Goal</h2>
+          <h2 className="section-title">🎯 Savings Goals</h2>
           <form onSubmit={handleSavingsUpdate}>
             <div className="form-group">
               <label className="form-label">Monthly Savings Goal (₹)</label>
@@ -280,14 +317,37 @@ const Settings = () => {
               </small>
             </div>
 
+            <div className="form-group">
+              <label className="form-label">All Time Savings Goal (₹)</label>
+              <input
+                type="text"
+                value={allTimeGoal}
+                onChange={handleAllTimeGoalChange}
+                className="form-control"
+                required
+                inputMode="decimal"
+              />
+              <small className="form-text">
+                Set your overall long-term savings target. Max: 9,999,999.99
+              </small>
+            </div>
+
             <div className="budget-info">
               <div className="info-item">
-                <span className="info-label">Current Goal:</span>
+                <span className="info-label">Current Monthly Goal:</span>
                 <span className="info-value">₹{user?.savingsGoal?.toFixed(2)}</span>
               </div>
               <div className="info-item">
-                <span className="info-label">New Goal:</span>
+                <span className="info-label">New Monthly Goal:</span>
                 <span className="info-value">₹{savingsGoal.toFixed(2)}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Current All Time Goal:</span>
+                <span className="info-value">₹{user?.allTimeGoal?.toFixed(2)}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">New All Time Goal:</span>
+                <span className="info-value">₹{allTimeGoal.toFixed(2)}</span>
               </div>
             </div>
 
@@ -296,7 +356,7 @@ const Settings = () => {
               className="btn btn-primary"
               disabled={loading.savings}
             >
-              {loading.savings ? 'Updating...' : 'Update Savings Goal'}
+              {loading.savings ? 'Updating...' : 'Update Savings Goals'}
             </button>
           </form>
         </div>

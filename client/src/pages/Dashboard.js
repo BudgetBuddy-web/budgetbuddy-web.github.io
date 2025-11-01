@@ -92,7 +92,7 @@ const Dashboard = () => {
           });
         
         // Calculate savings
-        const savingsGoal = user?.savingsGoal || 20000;
+        const savingsGoal = user?.allTimeGoal || 20000;
         const savings = balance;
         const savingsPercentage = totalIncome > 0 ? ((savings / totalIncome) * 100) : 0;
         
