@@ -178,20 +178,33 @@ const Settings = () => {
       
       // Update local state with response from server
       // Backend returns data inside response.data.data
-      updateUser({ 
-        savingsGoal: response.data.data.savingsGoal, 
-        allTimeGoal: response.data.data.allTimeGoal 
-      });
-      
-      toast.success('Savings goals updated successfully');
-      
-      // Refresh assistant progress after savings goal update
-      if (refreshProgress) {
-        setTimeout(() => refreshProgress(), 500);
+      if (response.data && response.data.data) {
+        updateUser({ 
+          savingsGoal: response.data.data.savingsGoal, 
+          allTimeGoal: response.data.data.allTimeGoal 
+        });
+        toast.success('Savings goals updated successfully');
+        
+        // Refresh assistant progress after savings goal update
+        if (refreshProgress) {
+          setTimeout(() => refreshProgress(), 500);
+        }
+      } else {
+        // Fallback: update with the values we sent
+        updateUser({ 
+          savingsGoal: savingsGoalNum, 
+          allTimeGoal: allTimeGoalNum 
+        });
+        toast.success('Savings goals updated successfully');
+        
+        if (refreshProgress) {
+          setTimeout(() => refreshProgress(), 500);
+        }
       }
     } catch (error) {
       toast.error('Failed to update savings goals');
-      console.error(error);
+      console.error('Update savings error:', error);
+      console.error('Error response:', error.response?.data);
     } finally {
       setLoading({ ...loading, savings: false });
     }
