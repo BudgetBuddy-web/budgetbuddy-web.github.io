@@ -16,72 +16,18 @@ const Charts = lazy(() => import('../components/DashboardCharts'));
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const { celebrate, worry, encourage, idle } = useAssistant();
+  const { refreshProgress } = useAssistant();
   const [summary, setSummary] = useState(null);
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('current-month'); // 'current-month' or 'all-time'
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [monthlyGoalProgress, setMonthlyGoalProgress] = useState(0); // For assistant reactions (percentage of goal achieved)
-
-  // Memoize reaction functions to avoid dependency issues
-  const triggerReactions = useCallback(() => {
-    // React based on monthly goal progress (percentage of savings goal achieved)
-    const goalProgressPercentage = monthlyGoalProgress;
-    
-    console.log('🎭 Triggering reactions with progress:', goalProgressPercentage + '%');
-    
-    // Don't trigger reactions if data hasn't loaded yet (initial 0% state)
-    if (goalProgressPercentage === 0 && loading) {
-      console.log('⏳ Skipping reactions - data still loading');
-      return;
-    }
-    
-    // Reactions based on progress toward savings goal
-    if (goalProgressPercentage >= 100) {
-      // Goal exceeded! - celebrate!
-      console.log('🎉 Celebrate! Goal exceeded!');
-      celebrate();
-    } else if (goalProgressPercentage >= 75) {
-      // Great progress (75-99%) - celebrate
-      console.log('🎉 Celebrate! Great progress!');
-      celebrate();
-    } else if (goalProgressPercentage >= 50) {
-      // Good progress (50-74%) - idle/steady
-      console.log('😌 Idle - Good progress');
-      idle();
-    } else if (goalProgressPercentage >= 25) {
-      // Moderate progress (25-49%) - encourage
-      console.log('💪 Encourage - Moderate progress');
-      encourage();
-    } else if (goalProgressPercentage >= 10) {
-      // Low progress (10-24%) - worry
-      console.log('😟 Worry - Low progress');
-      worry();
-    } else {
-      // Very low progress (< 10%) - worry more
-      console.log('😰 Worry - Very low progress');
-      worry();
-    }
-  }, [monthlyGoalProgress, celebrate, encourage, idle, worry, loading]);
 
   useEffect(() => {
     loadDashboardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewMode, selectedMonth, selectedYear]); // Reload when view mode or date changes
-
-  // Delay reactions to allow data to load first (prevents capturing 0% on initial load)
-  useEffect(() => {
-    // Only trigger reactions after data has loaded (monthlyGoalProgress > 0 or loading is false)
-    if (loading) return; // Don't trigger while loading
-    
-    const reactionTimer = setTimeout(() => {
-      triggerReactions();
-    }, 500); // 500ms delay to ensure data is fully loaded
-
-    return () => clearTimeout(reactionTimer);
-  }, [triggerReactions, loading]);
 
   const loadDashboardData = async () => {
     try {
@@ -92,40 +38,10 @@ const Dashboard = () => {
       // Set recent transactions
       setRecentTransactions(allTransactions.slice(0, 5));
       
-      // ALWAYS calculate current month's goal progress for assistant reactions
-      const currentMonth = new Date().getMonth() + 1;
-      const currentYear = new Date().getFullYear();
-      const currentMonthStart = new Date(currentYear, currentMonth - 1, 1);
-      const currentMonthEnd = new Date(currentYear, currentMonth, 0, 23, 59, 59);
-      
-      const currentMonthTransactions = allTransactions.filter(t => {
-        const transactionDate = new Date(t.date);
-        return transactionDate >= currentMonthStart && transactionDate <= currentMonthEnd;
-      });
-      
-      const currentMonthIncome = currentMonthTransactions
-        .filter(t => t.type === 'income')
-        .reduce((sum, t) => sum + t.amount, 0);
-      
-      const currentMonthExpenses = currentMonthTransactions
-        .filter(t => t.type === 'expense')
-        .reduce((sum, t) => sum + t.amount, 0);
-      
-      const currentMonthSavings = currentMonthIncome - currentMonthExpenses;
-      const monthlySavingsGoal = user?.savingsGoal || 20000;
-      
-      // Calculate goal progress percentage (how much of the goal is achieved)
-      const goalProgress = monthlySavingsGoal > 0 
-        ? (currentMonthSavings / monthlySavingsGoal) * 100 
-        : 0;
-      
-      console.log('📊 Dashboard data loaded:');
-      console.log('  - Current Month Savings:', currentMonthSavings);
-      console.log('  - Monthly Savings Goal:', monthlySavingsGoal);
-      console.log('  - Goal Progress:', goalProgress + '%');
-      
-      // Set monthly goal progress for assistant reactions
-      setMonthlyGoalProgress(goalProgress);
+      // Refresh assistant progress whenever dashboard loads
+      if (refreshProgress) {
+        refreshProgress();
+      }
       
       // Calculate summary based on view mode
       if (viewMode === 'all-time') {

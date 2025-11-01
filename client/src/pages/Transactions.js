@@ -17,7 +17,7 @@ const EXPENSE_CATEGORIES = [
 ];
 
 const Transactions = () => {
-  const { celebrate, shock, think } = useAssistant();
+  const { celebrate, shock, think, refreshProgress } = useAssistant();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -119,6 +119,11 @@ const Transactions = () => {
 
       loadTransactions();
       resetForm();
+      
+      // Refresh assistant progress after transaction change
+      if (refreshProgress) {
+        setTimeout(() => refreshProgress(), 500);
+      }
     } catch (error) {
       toast.error('Failed to save transaction');
       console.error(error);
@@ -193,6 +198,11 @@ const Transactions = () => {
       await transactionAPI.delete(id);
       toast.success('Transaction deleted successfully');
       loadTransactions();
+      
+      // Refresh assistant progress after transaction deletion
+      if (refreshProgress) {
+        setTimeout(() => refreshProgress(), 500);
+      }
     } catch (error) {
       toast.error('Failed to delete transaction');
       console.error(error);

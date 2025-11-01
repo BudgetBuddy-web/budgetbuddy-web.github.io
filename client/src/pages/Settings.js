@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useAssistant } from '../contexts/AssistantContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { userAPI } from '../services/api';
 import { toast } from 'react-toastify';
@@ -13,6 +14,7 @@ import './Settings.css';
 
 const Settings = () => {
   const { user, updateUser, logout } = useAuth();
+  const { refreshProgress } = useAssistant();
   const { setTheme } = useTheme();
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState({
@@ -73,7 +75,13 @@ const Settings = () => {
       value = parts[0] + '.' + parts[1].slice(0, 2);
     }
     
-    setSavingsGoal(value === '' ? '' : parseFloat(value) || 0);
+    // Don't convert to 0 if empty - keep as empty string
+    if (value === '') {
+      setSavingsGoal('');
+    } else {
+      const numValue = parseFloat(value);
+      setSavingsGoal(isNaN(numValue) ? '' : numValue);
+    }
   };
 
   const handleAllTimeGoalChange = (e) => {
@@ -98,7 +106,13 @@ const Settings = () => {
       value = parts[0] + '.' + parts[1].slice(0, 2);
     }
     
-    setAllTimeGoal(value === '' ? '' : parseFloat(value) || 0);
+    // Don't convert to 0 if empty - keep as empty string
+    if (value === '') {
+      setAllTimeGoal('');
+    } else {
+      const numValue = parseFloat(value);
+      setAllTimeGoal(isNaN(numValue) ? '' : numValue);
+    }
   };
 
   const handleProfileUpdate = async (e) => {
@@ -128,24 +142,28 @@ const Settings = () => {
   const handleSavingsUpdate = async (e) => {
     e.preventDefault();
     
+    // Convert to numbers for validation
+    const savingsGoalNum = parseFloat(savingsGoal);
+    const allTimeGoalNum = parseFloat(allTimeGoal);
+    
     // Validate savings goal
-    if (isNaN(savingsGoal) || savingsGoal <= 0) {
+    if (isNaN(savingsGoalNum) || savingsGoalNum <= 0) {
       toast.error('Please enter a valid monthly savings goal greater than 0');
       return;
     }
     
-    if (savingsGoal > 9999999.99) {
+    if (savingsGoalNum > 9999999.99) {
       toast.error('Monthly savings goal cannot exceed 9,999,999.99');
       return;
     }
 
     // Validate all-time goal
-    if (isNaN(allTimeGoal) || allTimeGoal <= 0) {
+    if (isNaN(allTimeGoalNum) || allTimeGoalNum <= 0) {
       toast.error('Please enter a valid all-time goal greater than 0');
       return;
     }
     
-    if (allTimeGoal > 9999999.99) {
+    if (allTimeGoalNum > 9999999.99) {
       toast.error('All-time goal cannot exceed 9,999,999.99');
       return;
     }
@@ -153,9 +171,23 @@ const Settings = () => {
     setLoading({ ...loading, savings: true });
 
     try {
-      await userAPI.updateBudget({ savingsGoal, allTimeGoal });
-      updateUser({ savingsGoal, allTimeGoal });
+      const response = await userAPI.updateBudget({ 
+        savingsGoal: savingsGoalNum, 
+        allTimeGoal: allTimeGoalNum 
+      });
+      
+      // Update local state with response from server
+      updateUser({ 
+        savingsGoal: response.data.savingsGoal, 
+        allTimeGoal: response.data.allTimeGoal 
+      });
+      
       toast.success('Savings goals updated successfully');
+      
+      // Refresh assistant progress after savings goal update
+      if (refreshProgress) {
+        setTimeout(() => refreshProgress(), 500);
+      }
     } catch (error) {
       toast.error('Failed to update savings goals');
       console.error(error);

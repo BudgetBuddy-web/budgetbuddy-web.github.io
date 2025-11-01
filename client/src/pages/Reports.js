@@ -5,11 +5,13 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { reportAPI, transactionAPI } from '../services/api';
+import { useAssistant } from '../contexts/AssistantContext';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import './Reports.css';
 
 const Reports = () => {
+  const { refreshProgress } = useAssistant();
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('current-month'); // 'current-month' or 'all-time'
@@ -100,7 +102,12 @@ const Reports = () => {
 
   useEffect(() => {
     loadSummary();
-  }, [loadSummary]);
+    
+    // Refresh assistant progress when reports page loads
+    if (refreshProgress) {
+      setTimeout(() => refreshProgress(), 500);
+    }
+  }, [loadSummary, refreshProgress]);
 
   const handleExportCSV = async () => {
     // Get period description for confirmation
