@@ -107,7 +107,8 @@ const Reports = () => {
     if (refreshProgress) {
       setTimeout(() => refreshProgress(), 500);
     }
-  }, [loadSummary, refreshProgress]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadSummary]); // refreshProgress is stable now, don't need in deps
 
   const handleExportCSV = async () => {
     // Get period description for confirmation

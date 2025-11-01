@@ -161,10 +161,16 @@ export const AssistantProvider = ({ children }) => {
   }, []);
 
   // Refresh progress (called after transaction changes)
+  // Use ref to access latest calculateProgress without dependency
+  const calculateProgressRef = React.useRef(calculateProgress);
+  React.useEffect(() => {
+    calculateProgressRef.current = calculateProgress;
+  });
+  
   const refreshProgress = useCallback(() => {
     console.log('🔄 Refreshing assistant progress...');
-    calculateProgress();
-  }, [calculateProgress]);
+    calculateProgressRef.current();
+  }, []); // No dependencies - stable function
 
   const value = {
     mood,
