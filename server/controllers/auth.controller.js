@@ -62,6 +62,7 @@ exports.register = async (req, res) => {
           name: user.name,
           email: user.email,
           savingsGoal: user.savingsGoal,
+          allTimeGoal: user.allTimeGoal,
           profilePic: user.profilePic,
           assistantPersonality: user.assistantPersonality,
           theme: user.theme
@@ -126,6 +127,7 @@ exports.login = async (req, res) => {
           name: user.name,
           email: user.email,
           savingsGoal: user.savingsGoal,
+          allTimeGoal: user.allTimeGoal,
           profilePic: user.profilePic,
           assistantPersonality: user.assistantPersonality,
           theme: user.theme
@@ -192,6 +194,7 @@ exports.googleAuth = async (req, res) => {
           name: user.name,
           email: user.email,
           savingsGoal: user.savingsGoal,
+          allTimeGoal: user.allTimeGoal,
           profilePic: user.profilePic,
           assistantPersonality: user.assistantPersonality,
           theme: user.theme
@@ -226,6 +229,7 @@ exports.getMe = async (req, res) => {
           name: user.name,
           email: user.email,
           savingsGoal: user.savingsGoal,
+          allTimeGoal: user.allTimeGoal,
           profilePic: user.profilePic,
           assistantPersonality: user.assistantPersonality,
           theme: user.theme

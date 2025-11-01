@@ -29,6 +29,7 @@ exports.updateProfile = async (req, res) => {
           name: user.name,
           email: user.email,
           savingsGoal: user.savingsGoal,
+          allTimeGoal: user.allTimeGoal,
           profilePic: user.profilePic,
           assistantPersonality: user.assistantPersonality,
           theme: user.theme

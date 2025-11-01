@@ -1,6 +1,10 @@
 /**
  * Assistant Context
- * Manages anime assistant state and animations
+ * Mana    if (!user || isCalculatingRef.current) return;
+    
+    try {
+      isCalculatingRef.current = true;
+      const transactionsRes = await transactionAPI.getAll();nime assistant state and animations
  */
 
 import React, { createContext, useState, useContext, useCallback, useEffect } from 'react';
@@ -24,11 +28,13 @@ export const AssistantProvider = ({ children }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [monthlyGoalProgress, setMonthlyGoalProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
-  const [isCalculating, setIsCalculating] = useState(false);
+  
+  // Use ref for isCalculating to avoid dependency issues
+  const isCalculatingRef = React.useRef(false);
 
   // Calculate monthly goal progress from transactions and set message
   const calculateProgress = useCallback(async () => {
-    if (!user || isCalculating) return;
+    if (!user || isCalculatingRef.current) return;
     
     try {
       setIsCalculating(true);
@@ -103,9 +109,9 @@ export const AssistantProvider = ({ children }) => {
     } catch (error) {
       console.error('Error calculating progress:', error);
     } finally {
-      setIsCalculating(false);
+      isCalculatingRef.current = false;
     }
-  }, [user]); // Remove isCalculating from dependencies to prevent infinite loop
+  }, [user]); // Only depends on user to prevent infinite loop
 
   // Calculate progress when user logs in or changes
   useEffect(() => {
