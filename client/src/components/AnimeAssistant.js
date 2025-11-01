@@ -154,7 +154,12 @@ const AnimeAssistant = () => {
   const playExpression = useCallback((expressionName) => {
     if (modelRef.current && modelRef.current.internalModel) {
       try {
-        modelRef.current.expression(expressionName);
+        // If expressionName is null, reset to default expression (index 0 or undefined)
+        if (expressionName === null || expressionName === 'default') {
+          modelRef.current.expression();  // Reset to default
+        } else {
+          modelRef.current.expression(expressionName);
+        }
       } catch (error) {
         // Silent fail - expression not found
       }
@@ -163,7 +168,8 @@ const AnimeAssistant = () => {
 
   // Play combined reaction (expression + motion)
   const playReaction = useCallback((expressionName, motionName) => {
-    if (expressionName) playExpression(expressionName);
+    // Always play expression (even if null, to reset)
+    playExpression(expressionName !== undefined ? expressionName : null);
     if (motionName) playMotion(motionName);
   }, [playExpression, playMotion]);
 
@@ -174,11 +180,11 @@ const AnimeAssistant = () => {
     // Map moods to expressions AND animations
     const reactionMap = {
       'happy': { 
-        expression: null, 
-        motion: null 
+        expression: null,  // Reset to normal face
+        motion: 'Idle'  // Play idle animation to reset 
       },
       'idle': { 
-        expression: null, 
+        expression: null,  // Reset to normal face
         motion: 'Idle' 
       },
       'excited': { 
