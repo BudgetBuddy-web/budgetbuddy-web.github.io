@@ -23,34 +23,31 @@ const Dashboard = () => {
   const [viewMode, setViewMode] = useState('current-month'); // 'current-month' or 'all-time'
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [monthlySavingsRate, setMonthlySavingsRate] = useState(0); // For assistant reactions
 
   // Memoize reaction functions to avoid dependency issues
   const triggerReactions = useCallback(() => {
-    if (summary && summary.summary) {
-      const totalIncome = Number(summary.summary.totalIncome) || 0;
-      const totalExpenses = Number(summary.summary.totalExpenses) || 0;
-      const savings = totalIncome - totalExpenses;
-      const savingsRatePercentage = totalIncome > 0 ? (savings / totalIncome) * 100 : 0;
-      
-      // Savings reactions based on savings rate (percentage of income saved)
-      if (savingsRatePercentage >= 60) {
-        // Great savings rate (>= 60% of income saved) - celebrate!
-        celebrate();
-      } else if (savingsRatePercentage >= 40) {
-        // Good savings rate (40-59% saved) - idle/steady
-        idle();
-      } else if (savingsRatePercentage >= 20) {
-        // Moderate savings rate (20-39% saved) - encourage
-        encourage();
-      } else if (savingsRatePercentage >= 5) {
-        // Low savings rate (5-19% saved) - worry
-        worry();
-      } else {
-        // Very low or negative savings (< 5%) - worry more
-        worry();
-      }
+    // Always use monthly savings rate for reactions
+    const savingsRatePercentage = monthlySavingsRate;
+    
+    // Savings reactions based on savings rate (percentage of income saved)
+    if (savingsRatePercentage >= 60) {
+      // Great savings rate (>= 60% of income saved) - celebrate!
+      celebrate();
+    } else if (savingsRatePercentage >= 40) {
+      // Good savings rate (40-59% saved) - idle/steady
+      idle();
+    } else if (savingsRatePercentage >= 20) {
+      // Moderate savings rate (20-39% saved) - encourage
+      encourage();
+    } else if (savingsRatePercentage >= 5) {
+      // Low savings rate (5-19% saved) - worry
+      worry();
+    } else {
+      // Very low or negative savings (< 5%) - worry more
+      worry();
     }
-  }, [summary, celebrate, encourage, idle, worry]);
+  }, [monthlySavingsRate, celebrate, encourage, idle, worry]);
 
   useEffect(() => {
     loadDashboardData();
@@ -69,6 +66,33 @@ const Dashboard = () => {
       
       // Set recent transactions
       setRecentTransactions(allTransactions.slice(0, 5));
+      
+      // ALWAYS calculate current month's savings rate for assistant reactions
+      const currentMonth = new Date().getMonth() + 1;
+      const currentYear = new Date().getFullYear();
+      const currentMonthStart = new Date(currentYear, currentMonth - 1, 1);
+      const currentMonthEnd = new Date(currentYear, currentMonth, 0, 23, 59, 59);
+      
+      const currentMonthTransactions = allTransactions.filter(t => {
+        const transactionDate = new Date(t.date);
+        return transactionDate >= currentMonthStart && transactionDate <= currentMonthEnd;
+      });
+      
+      const currentMonthIncome = currentMonthTransactions
+        .filter(t => t.type === 'income')
+        .reduce((sum, t) => sum + t.amount, 0);
+      
+      const currentMonthExpenses = currentMonthTransactions
+        .filter(t => t.type === 'expense')
+        .reduce((sum, t) => sum + t.amount, 0);
+      
+      const currentMonthSavings = currentMonthIncome - currentMonthExpenses;
+      const currentMonthSavingsRate = currentMonthIncome > 0 
+        ? (currentMonthSavings / currentMonthIncome) * 100 
+        : 0;
+      
+      // Set monthly savings rate for assistant reactions
+      setMonthlySavingsRate(currentMonthSavingsRate);
       
       // Calculate summary based on view mode
       if (viewMode === 'all-time') {
