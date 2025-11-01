@@ -10,9 +10,10 @@ import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import './Transactions.css';
 
-const CATEGORIES = [
+const INCOME_CATEGORIES = ['Salary', 'Freelance', 'Investment', 'Other'];
+const EXPENSE_CATEGORIES = [
   'Food', 'Travel', 'Entertainment', 'Shopping', 'Healthcare',
-  'Education', 'Utilities', 'Rent', 'Salary', 'Freelance', 'Investment', 'Other'
+  'Education', 'Utilities', 'Rent', 'Other'
 ];
 
 const Transactions = () => {
@@ -24,7 +25,7 @@ const Transactions = () => {
   const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
   const [formData, setFormData] = useState({
     type: 'expense',
-    category: 'Food',
+    category: EXPENSE_CATEGORIES[0],
     amount: '',
     date: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
     note: ''
@@ -48,11 +49,56 @@ const Transactions = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // When type changes, update category to match type
+    if (name === 'type') {
+      const newCategory = value === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0];
+      setFormData(prev => ({ ...prev, [name]: value, category: newCategory }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleAmountChange = (e) => {
+    let value = e.target.value;
+    
+    // Remove any non-numeric characters except decimal point
+    value = value.replace(/[^\d.]/g, '');
+    
+    // Prevent multiple decimal points
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+    
+    // Limit to 7 digits before decimal point
+    if (parts[0] && parts[0].length > 7) {
+      value = parts[0].slice(0, 7) + (parts[1] ? '.' + parts[1] : '');
+    }
+    
+    // Limit to 2 decimal places
+    if (parts[1] && parts[1].length > 2) {
+      value = parts[0] + '.' + parts[1].slice(0, 2);
+    }
+    
+    setFormData(prev => ({ ...prev, amount: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate amount
+    const amount = parseFloat(formData.amount);
+    if (isNaN(amount) || amount <= 0) {
+      toast.error('Please enter a valid amount greater than 0');
+      return;
+    }
+    
+    if (amount > 9999999.99) {
+      toast.error('Amount cannot exceed 9,999,999.99');
+      return;
+    }
+    
     think();
 
     try {
@@ -156,7 +202,7 @@ const Transactions = () => {
   const resetForm = () => {
     setFormData({
       type: 'expense',
-      category: 'Food',
+      category: EXPENSE_CATEGORIES[0],
       amount: '',
       date: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
       note: ''
@@ -169,7 +215,7 @@ const Transactions = () => {
     setEditingTransaction(null);
     setFormData({
       type: 'expense',
-      category: 'Food',
+      category: EXPENSE_CATEGORIES[0],
       amount: '',
       date: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"), // Set current time when opening
       note: ''
@@ -295,7 +341,7 @@ const Transactions = () => {
                     onChange={handleInputChange}
                     className="form-select"
                   >
-                    {CATEGORIES.map(cat => (
+                    {(formData.type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES).map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
                     ))}
                   </select>
@@ -306,15 +352,18 @@ const Transactions = () => {
                 <div className="form-group">
                   <label className="form-label">Amount</label>
                   <input
-                    type="number"
+                    type="text"
                     name="amount"
                     value={formData.amount}
-                    onChange={handleInputChange}
+                    onChange={handleAmountChange}
                     className="form-control"
                     placeholder="0.00"
-                    step="0.01"
                     required
+                    inputMode="decimal"
                   />
+                  <small className="form-text" style={{ fontSize: '12px', color: '#888' }}>
+                    💰 Maximum: 9,999,999.99
+                  </small>
                 </div>
 
                 <div className="form-group">

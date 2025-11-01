@@ -33,6 +33,31 @@ const Settings = () => {
     settings: false
   });
 
+  const handleSavingsGoalChange = (e) => {
+    let value = e.target.value;
+    
+    // Remove any non-numeric characters except decimal point
+    value = value.replace(/[^\d.]/g, '');
+    
+    // Prevent multiple decimal points
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+    
+    // Limit to 7 digits before decimal point
+    if (parts[0] && parts[0].length > 7) {
+      value = parts[0].slice(0, 7) + (parts[1] ? '.' + parts[1] : '');
+    }
+    
+    // Limit to 2 decimal places
+    if (parts[1] && parts[1].length > 2) {
+      value = parts[0] + '.' + parts[1].slice(0, 2);
+    }
+    
+    setSavingsGoal(value === '' ? '' : parseFloat(value) || 0);
+  };
+
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setLoading({ ...loading, profile: true });
@@ -59,6 +84,18 @@ const Settings = () => {
 
   const handleSavingsUpdate = async (e) => {
     e.preventDefault();
+    
+    // Validate savings goal
+    if (isNaN(savingsGoal) || savingsGoal <= 0) {
+      toast.error('Please enter a valid savings goal greater than 0');
+      return;
+    }
+    
+    if (savingsGoal > 9999999.99) {
+      toast.error('Savings goal cannot exceed 9,999,999.99');
+      return;
+    }
+    
     setLoading({ ...loading, savings: true });
 
     try {
@@ -231,16 +268,15 @@ const Settings = () => {
             <div className="form-group">
               <label className="form-label">Monthly Savings Goal (₹)</label>
               <input
-                type="number"
+                type="text"
                 value={savingsGoal}
-                onChange={(e) => setSavingsGoal(parseFloat(e.target.value))}
+                onChange={handleSavingsGoalChange}
                 className="form-control"
-                min="0"
-                step="100"
                 required
+                inputMode="decimal"
               />
               <small className="form-text">
-                Set your monthly savings target (recommended: 20-50% of income)
+                Set your monthly savings target (recommended: 20-50% of income). Max: 9,999,999.99
               </small>
             </div>
 

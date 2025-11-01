@@ -37,7 +37,8 @@ const transactionSchema = new mongoose.Schema({
   amount: {
     type: Number,
     required: [true, 'Amount is required'],
-    min: [0, 'Amount must be positive']
+    min: [0.01, 'Amount must be greater than 0'],
+    max: [9999999.99, 'Amount cannot exceed 9,999,999.99']
   },
   date: {
     type: Date,
