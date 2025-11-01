@@ -23,10 +23,10 @@ export const AssistantProvider = ({ children }) => {
   const [message, setMessage] = useState('Welcome to BudgetBuddy! 💰');
   const [isVisible, setIsVisible] = useState(true);
   const [monthlyGoalProgress, setMonthlyGoalProgress] = useState(0);
+  const [progressMessage, setProgressMessage] = useState('');
   const [isCalculating, setIsCalculating] = useState(false);
-  const [lastReactionProgress, setLastReactionProgress] = useState(-1);
 
-  // Calculate monthly goal progress from transactions
+  // Calculate monthly goal progress from transactions and set message
   const calculateProgress = useCallback(async () => {
     if (!user || isCalculating) return;
     
@@ -68,6 +68,38 @@ export const AssistantProvider = ({ children }) => {
       console.log('  - Goal Progress:', goalProgress.toFixed(2) + '%');
       
       setMonthlyGoalProgress(goalProgress);
+      
+      // Set message based on progress and trigger expression based on message keywords
+      let newMessage = '';
+      let newMood = 'happy';
+      
+      if (goalProgress >= 100) {
+        newMessage = `🎉 Amazing! ${goalProgress.toFixed(1)}% - You're exceeding your goals!`;
+        newMood = 'excited';
+      } else if (goalProgress >= 75) {
+        newMessage = `💖 Excellent! ${goalProgress.toFixed(1)}% - Keep up the great work!`;
+        newMood = 'excited';
+      } else if (goalProgress >= 50) {
+        newMessage = `😊 Good job! ${goalProgress.toFixed(1)}% - You're doing well!`;
+        newMood = 'idle';
+      } else if (goalProgress >= 25) {
+        newMessage = `💪 Keep going! ${goalProgress.toFixed(1)}% - You can do this!`;
+        newMood = 'happy';
+      } else if (goalProgress >= 10) {
+        newMessage = `😟 Careful! ${goalProgress.toFixed(1)}% - Watch your spending...`;
+        newMood = 'sad';
+      } else {
+        newMessage = `😢 Oh no! ${goalProgress.toFixed(1)}% - Please save more!`;
+        newMood = 'sad';
+      }
+      
+      setProgressMessage(newMessage);
+      setMessage(newMessage);
+      setMood(newMood);
+      
+      console.log('💬 Message set:', newMessage);
+      console.log('🎭 Mood set:', newMood);
+      
     } catch (error) {
       console.error('Error calculating progress:', error);
     } finally {
@@ -75,57 +107,17 @@ export const AssistantProvider = ({ children }) => {
     }
   }, [user, isCalculating]);
 
-  // Trigger reactions based on progress
-  const triggerProgressReaction = useCallback(() => {
-    if (isCalculating || monthlyGoalProgress === 0) return;
-    
-    // Don't trigger if progress hasn't changed significantly (avoid spam)
-    if (Math.abs(monthlyGoalProgress - lastReactionProgress) < 5 && lastReactionProgress !== -1) {
-      return;
-    }
-    
-    console.log('🎭 Triggering reaction for progress:', monthlyGoalProgress.toFixed(2) + '%');
-    setLastReactionProgress(monthlyGoalProgress);
-    
-    // Reactions based on progress toward savings goal
-    if (monthlyGoalProgress >= 100) {
-      celebrate();
-    } else if (monthlyGoalProgress >= 75) {
-      celebrate();
-    } else if (monthlyGoalProgress >= 50) {
-      idle();
-    } else if (monthlyGoalProgress >= 25) {
-      encourage();
-    } else if (monthlyGoalProgress >= 10) {
-      worry();
-    } else {
-      worry();
-    }
-  }, [monthlyGoalProgress, isCalculating, lastReactionProgress]);
-
   // Calculate progress when user logs in or changes
   useEffect(() => {
     if (user) {
       // Delay to ensure data is loaded
       const timer = setTimeout(() => {
         calculateProgress();
-      }, 1000);
+      }, 800);
       
       return () => clearTimeout(timer);
     }
   }, [user, calculateProgress]);
-
-  // Trigger reaction when progress changes (with longer delay)
-  useEffect(() => {
-    if (monthlyGoalProgress > 0 && !isCalculating) {
-      // Longer delay to ensure UI is fully loaded
-      const timer = setTimeout(() => {
-        triggerProgressReaction();
-      }, 1500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [monthlyGoalProgress, isCalculating, triggerProgressReaction]);
 
   // Set assistant mood and message
   const react = useCallback((newMood, newMessage) => {
@@ -179,6 +171,7 @@ export const AssistantProvider = ({ children }) => {
     message,
     isVisible,
     monthlyGoalProgress,
+    progressMessage,
     setMood,
     setMessage,
     react,
