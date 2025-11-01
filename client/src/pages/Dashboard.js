@@ -32,6 +32,12 @@ const Dashboard = () => {
     
     console.log('🎭 Triggering reactions with progress:', goalProgressPercentage + '%');
     
+    // Don't trigger reactions if data hasn't loaded yet (initial 0% state)
+    if (goalProgressPercentage === 0 && loading) {
+      console.log('⏳ Skipping reactions - data still loading');
+      return;
+    }
+    
     // Reactions based on progress toward savings goal
     if (goalProgressPercentage >= 100) {
       // Goal exceeded! - celebrate!
@@ -58,16 +64,24 @@ const Dashboard = () => {
       console.log('😰 Worry - Very low progress');
       worry();
     }
-  }, [monthlyGoalProgress, celebrate, encourage, idle, worry]);
+  }, [monthlyGoalProgress, celebrate, encourage, idle, worry, loading]);
 
   useEffect(() => {
     loadDashboardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewMode, selectedMonth, selectedYear]); // Reload when view mode or date changes
 
+  // Delay reactions to allow data to load first (prevents capturing 0% on initial load)
   useEffect(() => {
-    triggerReactions();
-  }, [triggerReactions]);
+    // Only trigger reactions after data has loaded (monthlyGoalProgress > 0 or loading is false)
+    if (loading) return; // Don't trigger while loading
+    
+    const reactionTimer = setTimeout(() => {
+      triggerReactions();
+    }, 500); // 500ms delay to ensure data is fully loaded
+
+    return () => clearTimeout(reactionTimer);
+  }, [triggerReactions, loading]);
 
   const loadDashboardData = async () => {
     try {
