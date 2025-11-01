@@ -177,9 +177,10 @@ const Settings = () => {
       });
       
       // Update local state with response from server
+      // Backend returns data inside response.data.data
       updateUser({ 
-        savingsGoal: response.data.savingsGoal, 
-        allTimeGoal: response.data.allTimeGoal 
+        savingsGoal: response.data.data.savingsGoal, 
+        allTimeGoal: response.data.data.allTimeGoal 
       });
       
       toast.success('Savings goals updated successfully');

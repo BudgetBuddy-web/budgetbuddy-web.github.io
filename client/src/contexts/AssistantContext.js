@@ -105,7 +105,7 @@ export const AssistantProvider = ({ children }) => {
     } finally {
       setIsCalculating(false);
     }
-  }, [user, isCalculating]);
+  }, [user]); // Remove isCalculating from dependencies to prevent infinite loop
 
   // Calculate progress when user logs in or changes
   useEffect(() => {
@@ -117,7 +117,7 @@ export const AssistantProvider = ({ children }) => {
       
       return () => clearTimeout(timer);
     }
-  }, [user, calculateProgress]);
+  }, [user]); // Remove calculateProgress from dependencies to prevent infinite loop
 
   // Set assistant mood and message
   const react = useCallback((newMood, newMessage) => {
