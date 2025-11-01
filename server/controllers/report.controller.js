@@ -85,7 +85,7 @@ exports.getSummary = async (req, res) => {
           balance,
           savingsGoal,
           savings,
-          savingsPercentage
+          savingsPercentage: parseFloat(savingsPercentage.toFixed(2))
         },
         categoryBreakdown,
         insights,

@@ -302,7 +302,7 @@ const Dashboard = () => {
             <span>₹{safeSavings.toFixed(2)} saved / ₹{safeSavingsGoal.toFixed(2)} goal</span>
           </div>
           <div className="progress-info" style={{ marginTop: '8px', fontSize: '14px', color: '#666' }}>
-            <span>💡 Savings rate: {safeSavingsPercentage.toFixed(1)}% of income</span>
+            <span>💡 Savings rate: {safeSavingsPercentage.toFixed(2)}% of income</span>
           </div>
         </div>
       </div>

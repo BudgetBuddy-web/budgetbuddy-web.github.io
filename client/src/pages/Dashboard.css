@@ -171,6 +171,9 @@
   font-size: 20px;
   margin-bottom: 20px;
   color: #333;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.4;
 }
 
 .budget-progress {
