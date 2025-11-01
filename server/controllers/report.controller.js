@@ -58,7 +58,7 @@ exports.getSummary = async (req, res) => {
     if (savings >= savingsGoal) {
       insights.push(`Excellent! You saved ₹${savings.toFixed(2)}, exceeding your goal by ₹${(savings - savingsGoal).toFixed(2)}`);
     } else if (savings > 0) {
-      insights.push(`You saved ₹${savings.toFixed(2)} this month (${savingsPercentage}% of income)`);
+      insights.push(`You saved ₹${savings.toFixed(2)} this month (${savingsPercentage.toFixed(2)}% of income)`);
     } else if (savings < 0) {
       insights.push(`Warning: You spent ₹${Math.abs(savings).toFixed(2)} more than you earned`);
     }
