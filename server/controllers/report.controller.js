@@ -89,6 +89,7 @@ exports.getSummary = async (req, res) => {
         },
         categoryBreakdown,
         insights,
+        transactions, // Include actual transactions for printing
         transactionCount: {
           income: transactions.filter(t => t.type === 'income').length,
           expense: transactions.filter(t => t.type === 'expense').length,

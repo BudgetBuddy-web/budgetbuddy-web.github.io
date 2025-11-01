@@ -6,6 +6,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { reportAPI } from '../services/api';
 import { toast } from 'react-toastify';
+import { format } from 'date-fns';
 import './Reports.css';
 
 const Reports = () => {
@@ -87,7 +88,7 @@ const Reports = () => {
   }
 
   const { totalIncome, totalExpenses, balance } = summary.summary;
-  const { categoryBreakdown, insights } = summary;
+  const { categoryBreakdown, insights, transactions = [] } = summary;
 
   return (
     <div className="reports-page">
@@ -192,7 +193,7 @@ const Reports = () => {
 
       {/* Insights */}
       {insights.length > 0 && (
-        <div className="card">
+        <div className="card mb-4">
           <h3 className="card-title">💡 Financial Insights</h3>
           <ul className="insights-list">
             {insights.map((insight, index) => (
@@ -201,6 +202,80 @@ const Reports = () => {
           </ul>
         </div>
       )}
+
+      {/* Transactions List */}
+      <div className="card transactions-section">
+        <div className="section-header">
+          <h3 className="card-title">📋 Transaction Details</h3>
+          <button 
+            className="btn btn-primary"
+            onClick={() => window.print()}
+          >
+            🖨️ Print Report
+          </button>
+        </div>
+        
+        {transactions.length > 0 ? (
+          <div className="table-responsive">
+            <table className="transactions-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions.map((transaction) => (
+                  <tr key={transaction._id}>
+                    <td>
+                      <div>{format(new Date(transaction.date), 'MMM dd, yyyy')}</div>
+                      <div style={{ fontSize: '12px', color: '#888' }}>
+                        {format(new Date(transaction.date), 'HH:mm')}
+                      </div>
+                    </td>
+                    <td>
+                      <span className={`badge ${transaction.type}`}>
+                        {transaction.type}
+                      </span>
+                    </td>
+                    <td>{transaction.category}</td>
+                    <td className={`amount ${transaction.type}`}>
+                      {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
+                    </td>
+                    <td>{transaction.note || '-'}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr className="total-row">
+                  <td colspan="3"><strong>Total</strong></td>
+                  <td><strong className="amount income">+₹{totalIncome.toFixed(2)}</strong></td>
+                  <td></td>
+                </tr>
+                <tr className="total-row">
+                  <td colspan="3"><strong>Total Expenses</strong></td>
+                  <td><strong className="amount expense">-₹{totalExpenses.toFixed(2)}</strong></td>
+                  <td></td>
+                </tr>
+                <tr className="total-row highlight">
+                  <td colspan="3"><strong>Net Balance</strong></td>
+                  <td>
+                    <strong className={`amount ${balance >= 0 ? 'income' : 'expense'}`}>
+                      ₹{balance.toFixed(2)}
+                    </strong>
+                  </td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        ) : (
+          <p className="text-center">No transactions for this period</p>
+        )}
+      </div>
     </div>
   );
 };

@@ -21,6 +21,8 @@ const Dashboard = () => {
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('current-month'); // 'current-month' or 'all-time'
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   // Memoize reaction functions to avoid dependency issues
   const triggerReactions = useCallback(() => {
@@ -53,7 +55,7 @@ const Dashboard = () => {
   useEffect(() => {
     loadDashboardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewMode]); // Reload when view mode changes
+  }, [viewMode, selectedMonth, selectedYear]); // Reload when view mode or date changes
 
   useEffect(() => {
     triggerReactions();
@@ -132,7 +134,10 @@ const Dashboard = () => {
         });
       } else {
         // Get current month summary from API
-        const summaryRes = await reportAPI.getSummary();
+        const summaryRes = await reportAPI.getSummary({
+          month: selectedMonth,
+          year: selectedYear
+        });
         setSummary(summaryRes.data);
       }
     } catch (error) {
@@ -172,19 +177,47 @@ const Dashboard = () => {
           <h1>Welcome back, {user?.name}! 👋</h1>
           <p>Here's your financial overview</p>
         </div>
-        <div className="view-toggle">
-          <button 
-            className={`toggle-btn ${viewMode === 'current-month' ? 'active' : ''}`}
-            onClick={() => setViewMode('current-month')}
-          >
-            📅 This Month
-          </button>
-          <button 
-            className={`toggle-btn ${viewMode === 'all-time' ? 'active' : ''}`}
-            onClick={() => setViewMode('all-time')}
-          >
-            🌍 All Time
-          </button>
+        <div className="header-controls">
+          <div className="view-toggle">
+            <button 
+              className={`toggle-btn ${viewMode === 'current-month' ? 'active' : ''}`}
+              onClick={() => setViewMode('current-month')}
+            >
+              📅 This Month
+            </button>
+            <button 
+              className={`toggle-btn ${viewMode === 'all-time' ? 'active' : ''}`}
+              onClick={() => setViewMode('all-time')}
+            >
+              🌍 All Time
+            </button>
+          </div>
+          
+          {viewMode === 'current-month' && (
+            <div className="month-selector">
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                className="month-select"
+              >
+                {Array.from({ length: 12 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {new Date(2000, i, 1).toLocaleString('default', { month: 'short' })}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                className="year-select"
+              >
+                {Array.from({ length: 5 }, (_, i) => {
+                  const year = new Date().getFullYear() - i;
+                  return <option key={year} value={year}>{year}</option>;
+                })}
+              </select>
+            </div>
+          )}
         </div>
       </div>
 

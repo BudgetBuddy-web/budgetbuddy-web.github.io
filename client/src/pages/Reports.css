@@ -84,6 +84,125 @@
   color: #666;
 }
 
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.transactions-section .transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transactions-section .transactions-table th,
+.transactions-section .transactions-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e1e8ed;
+}
+
+.transactions-section .transactions-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+.transactions-section .transactions-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.transactions-section .badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.transactions-section .badge.income {
+  background: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+}
+
+.transactions-section .badge.expense {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.transactions-section .total-row {
+  font-weight: 600;
+  background: #f8f9fa;
+}
+
+.transactions-section .total-row.highlight {
+  background: #e3f2fd;
+  font-size: 16px;
+}
+
+/* Print Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  .reports-page,
+  .reports-page * {
+    visibility: visible;
+  }
+  
+  .reports-page {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  
+  /* Hide navigation and non-essential elements */
+  nav,
+  .page-header button,
+  .export-buttons,
+  .section-header button,
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Optimize for printing */
+  .card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+  
+  .transactions-table {
+    font-size: 11px;
+  }
+  
+  .transactions-table th,
+  .transactions-table td {
+    padding: 6px;
+  }
+  
+  /* Page breaks */
+  .summary-card,
+  .category-item {
+    page-break-inside: avoid;
+  }
+  
+  /* Print header */
+  .reports-page::before {
+    content: "BudgetBuddy - Financial Report";
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #333;
+  }
+}
+
 @media (max-width: 768px) {
   .period-selector {
     grid-template-columns: 1fr;
@@ -95,5 +214,15 @@
 
   .export-buttons .btn {
     flex: 1;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .section-header .btn {
+    width: 100%;
   }
 }
