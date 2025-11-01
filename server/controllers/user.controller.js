@@ -52,26 +52,39 @@ exports.updateProfile = async (req, res) => {
  */
 exports.updateBudget = async (req, res) => {
   try {
-    const { savingsGoal } = req.body;
+    const { savingsGoal, allTimeGoal } = req.body;
 
     if (!savingsGoal || savingsGoal < 0) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid savings goal'
+        message: 'Invalid monthly savings goal'
       });
+    }
+
+    if (allTimeGoal !== undefined && allTimeGoal < 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid all-time goal'
+      });
+    }
+
+    const updateData = { savingsGoal };
+    if (allTimeGoal !== undefined) {
+      updateData.allTimeGoal = allTimeGoal;
     }
 
     const user = await User.findByIdAndUpdate(
       req.user._id,
-      { savingsGoal },
+      updateData,
       { new: true, runValidators: true }
     ).select('-password');
 
     res.json({
       success: true,
-      message: 'Savings goal updated successfully',
+      message: 'Savings goals updated successfully',
       data: {
-        savingsGoal: user.savingsGoal
+        savingsGoal: user.savingsGoal,
+        allTimeGoal: user.allTimeGoal
       }
     });
   } catch (error) {

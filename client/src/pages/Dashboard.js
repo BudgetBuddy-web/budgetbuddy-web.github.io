@@ -30,24 +30,32 @@ const Dashboard = () => {
     // React based on monthly goal progress (percentage of savings goal achieved)
     const goalProgressPercentage = monthlyGoalProgress;
     
+    console.log('🎭 Triggering reactions with progress:', goalProgressPercentage + '%');
+    
     // Reactions based on progress toward savings goal
     if (goalProgressPercentage >= 100) {
       // Goal exceeded! - celebrate!
+      console.log('🎉 Celebrate! Goal exceeded!');
       celebrate();
     } else if (goalProgressPercentage >= 75) {
       // Great progress (75-99%) - celebrate
+      console.log('🎉 Celebrate! Great progress!');
       celebrate();
     } else if (goalProgressPercentage >= 50) {
       // Good progress (50-74%) - idle/steady
+      console.log('😌 Idle - Good progress');
       idle();
     } else if (goalProgressPercentage >= 25) {
       // Moderate progress (25-49%) - encourage
+      console.log('💪 Encourage - Moderate progress');
       encourage();
     } else if (goalProgressPercentage >= 10) {
       // Low progress (10-24%) - worry
+      console.log('😟 Worry - Low progress');
       worry();
     } else {
       // Very low progress (< 10%) - worry more
+      console.log('😰 Worry - Very low progress');
       worry();
     }
   }, [monthlyGoalProgress, celebrate, encourage, idle, worry]);
@@ -96,6 +104,11 @@ const Dashboard = () => {
       const goalProgress = monthlySavingsGoal > 0 
         ? (currentMonthSavings / monthlySavingsGoal) * 100 
         : 0;
+      
+      console.log('📊 Dashboard data loaded:');
+      console.log('  - Current Month Savings:', currentMonthSavings);
+      console.log('  - Monthly Savings Goal:', monthlySavingsGoal);
+      console.log('  - Goal Progress:', goalProgress + '%');
       
       // Set monthly goal progress for assistant reactions
       setMonthlyGoalProgress(goalProgress);
