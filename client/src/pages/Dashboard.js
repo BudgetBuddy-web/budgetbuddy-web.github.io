@@ -24,8 +24,9 @@ const Dashboard = () => {
 
   // Memoize reaction functions to avoid dependency issues
   const triggerReactions = useCallback(() => {
-    if (summary) {
-      const { totalIncome, totalExpenses } = summary.summary;
+    if (summary && summary.summary) {
+      const totalIncome = Number(summary.summary.totalIncome) || 0;
+      const totalExpenses = Number(summary.summary.totalExpenses) || 0;
       const savings = totalIncome - totalExpenses;
       const savingsRatePercentage = totalIncome > 0 ? (savings / totalIncome) * 100 : 0;
       
@@ -91,14 +92,14 @@ const Dashboard = () => {
         // Calculate savings
         const savingsGoal = user?.savingsGoal || 20000;
         const savings = balance;
-        const savingsPercentage = totalIncome > 0 ? ((savings / totalIncome) * 100).toFixed(1) : 0;
+        const savingsPercentage = totalIncome > 0 ? ((savings / totalIncome) * 100) : 0;
         
         // Generate insights
         const insights = [];
         if (savings >= savingsGoal) {
           insights.push(`Excellent! You saved ₹${savings.toFixed(2)}, exceeding your goal by ₹${(savings - savingsGoal).toFixed(2)}`);
         } else if (savings > 0) {
-          insights.push(`You saved ₹${savings.toFixed(2)} (${savingsPercentage}% of income)`);
+          insights.push(`You saved ₹${savings.toFixed(2)} (${savingsPercentage.toFixed(1)}% of income)`);
         } else if (savings < 0) {
           insights.push(`Warning: You spent ₹${Math.abs(savings).toFixed(2)} more than you earned`);
         }
@@ -153,8 +154,16 @@ const Dashboard = () => {
   const { totalIncome, totalExpenses, balance, savingsGoal, savings, savingsPercentage } = summary.summary;
   const { categoryBreakdown, insights } = summary;
 
+  // Ensure all values are numbers with defaults
+  const safeIncome = Number(totalIncome) || 0;
+  const safeExpenses = Number(totalExpenses) || 0;
+  const safeBalance = Number(balance) || 0;
+  const safeSavingsGoal = Number(savingsGoal) || 20000;
+  const safeSavings = Number(savings) || 0;
+  const safeSavingsPercentage = Number(savingsPercentage) || 0;
+
   // Calculate progress toward savings goal
-  const goalProgress = savingsGoal > 0 ? (savings / savingsGoal) * 100 : 0;
+  const goalProgress = safeSavingsGoal > 0 ? (safeSavings / safeSavingsGoal) * 100 : 0;
 
   return (
     <div className="dashboard">
@@ -180,12 +189,13 @@ const Dashboard = () => {
       </div>
 
       {/* Summary Cards */}
+            {/* Summary Cards */}
       <div className="grid grid-4 mb-4">
         <div className="stat-card income">
           <div className="stat-icon">💰</div>
           <div className="stat-info">
             <p className="stat-label">Total Income</p>
-            <h2 className="stat-value">₹{totalIncome.toFixed(2)}</h2>
+            <h2 className="stat-value">₹{safeIncome.toFixed(2)}</h2>
           </div>
         </div>
 
@@ -193,7 +203,7 @@ const Dashboard = () => {
           <div className="stat-icon">💸</div>
           <div className="stat-info">
             <p className="stat-label">Total Expenses</p>
-            <h2 className="stat-value">₹{totalExpenses.toFixed(2)}</h2>
+            <h2 className="stat-value">₹{safeExpenses.toFixed(2)}</h2>
           </div>
         </div>
 
@@ -201,15 +211,15 @@ const Dashboard = () => {
           <div className="stat-icon">💵</div>
           <div className="stat-info">
             <p className="stat-label">Balance</p>
-            <h2 className="stat-value">₹{balance.toFixed(2)}</h2>
+            <h2 className="stat-value">₹{safeBalance.toFixed(2)}</h2>
           </div>
         </div>
 
-        <div className="stat-card savings">
+        <div className="stat-card goal">
           <div className="stat-icon">🎯</div>
           <div className="stat-info">
             <p className="stat-label">Savings Goal</p>
-            <h2 className="stat-value">₹{savingsGoal.toFixed(2)}</h2>
+            <h2 className="stat-value">₹{safeSavingsGoal.toFixed(2)}</h2>
           </div>
         </div>
       </div>
@@ -226,10 +236,10 @@ const Dashboard = () => {
           </div>
           <div className="progress-info">
             <span>{goalProgress.toFixed(1)}% of goal achieved</span>
-            <span>₹{savings.toFixed(2)} saved / ₹{savingsGoal.toFixed(2)} goal</span>
+            <span>₹{safeSavings.toFixed(2)} saved / ₹{safeSavingsGoal.toFixed(2)} goal</span>
           </div>
           <div className="progress-info" style={{ marginTop: '8px', fontSize: '14px', color: '#666' }}>
-            <span>💡 Savings rate: {savingsPercentage.toFixed(1)}% of income</span>
+            <span>💡 Savings rate: {safeSavingsPercentage.toFixed(1)}% of income</span>
           </div>
         </div>
       </div>
