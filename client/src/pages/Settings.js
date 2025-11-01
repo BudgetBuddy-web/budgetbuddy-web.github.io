@@ -352,19 +352,19 @@ const Settings = () => {
             <div className="budget-info">
               <div className="info-item">
                 <span className="info-label">Current Monthly Goal:</span>
-                <span className="info-value">₹{user?.savingsGoal?.toFixed(2)}</span>
+                <span className="info-value">₹{(user?.savingsGoal || 0).toFixed(2)}</span>
               </div>
               <div className="info-item">
                 <span className="info-label">New Monthly Goal:</span>
-                <span className="info-value">₹{savingsGoal.toFixed(2)}</span>
+                <span className="info-value">₹{(Number(savingsGoal) || 0).toFixed(2)}</span>
               </div>
               <div className="info-item">
                 <span className="info-label">Current All Time Goal:</span>
-                <span className="info-value">₹{user?.allTimeGoal?.toFixed(2)}</span>
+                <span className="info-value">₹{(user?.allTimeGoal || 0).toFixed(2)}</span>
               </div>
               <div className="info-item">
                 <span className="info-label">New All Time Goal:</span>
-                <span className="info-value">₹{allTimeGoal.toFixed(2)}</span>
+                <span className="info-value">₹{(Number(allTimeGoal) || 0).toFixed(2)}</span>
               </div>
             </div>
 
