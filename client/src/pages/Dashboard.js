@@ -20,6 +20,7 @@ const Dashboard = () => {
   const [summary, setSummary] = useState(null);
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState('current-month'); // 'current-month' or 'all-time'
 
   // Memoize reaction functions to avoid dependency issues
   const triggerReactions = useCallback(() => {
@@ -51,7 +52,7 @@ const Dashboard = () => {
   useEffect(() => {
     loadDashboardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [viewMode]); // Reload when view mode changes
 
   useEffect(() => {
     triggerReactions();
@@ -59,13 +60,80 @@ const Dashboard = () => {
 
   const loadDashboardData = async () => {
     try {
-      const [summaryRes, transactionsRes] = await Promise.all([
-        reportAPI.getSummary(),
-        transactionAPI.getAll()
-      ]);
-
-      setSummary(summaryRes.data);
-      setRecentTransactions(transactionsRes.data.slice(0, 5));
+      // Get all transactions first
+      const transactionsRes = await transactionAPI.getAll();
+      const allTransactions = transactionsRes.data;
+      
+      // Set recent transactions
+      setRecentTransactions(allTransactions.slice(0, 5));
+      
+      // Calculate summary based on view mode
+      if (viewMode === 'all-time') {
+        // Calculate all-time totals from all transactions
+        const totalIncome = allTransactions
+          .filter(t => t.type === 'income')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const totalExpenses = allTransactions
+          .filter(t => t.type === 'expense')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const balance = totalIncome - totalExpenses;
+        
+        // Category breakdown
+        const categoryBreakdown = {};
+        allTransactions
+          .filter(t => t.type === 'expense')
+          .forEach(t => {
+            categoryBreakdown[t.category] = (categoryBreakdown[t.category] || 0) + t.amount;
+          });
+        
+        // Calculate savings
+        const savingsGoal = user?.savingsGoal || 20000;
+        const savings = balance;
+        const savingsPercentage = totalIncome > 0 ? ((savings / totalIncome) * 100).toFixed(1) : 0;
+        
+        // Generate insights
+        const insights = [];
+        if (savings >= savingsGoal) {
+          insights.push(`Excellent! You saved ₹${savings.toFixed(2)}, exceeding your goal by ₹${(savings - savingsGoal).toFixed(2)}`);
+        } else if (savings > 0) {
+          insights.push(`You saved ₹${savings.toFixed(2)} (${savingsPercentage}% of income)`);
+        } else if (savings < 0) {
+          insights.push(`Warning: You spent ₹${Math.abs(savings).toFixed(2)} more than you earned`);
+        }
+        
+        const highestCategory = Object.entries(categoryBreakdown)
+          .sort((a, b) => b[1] - a[1])[0];
+        if (highestCategory) {
+          insights.push(`Your highest expense category is ${highestCategory[0]} (₹${highestCategory[1].toFixed(2)})`);
+        }
+        
+        setSummary({
+          period: {
+            display: 'All Time'
+          },
+          summary: {
+            totalIncome,
+            totalExpenses,
+            balance,
+            savingsGoal,
+            savings,
+            savingsPercentage
+          },
+          categoryBreakdown,
+          insights,
+          transactionCount: {
+            income: allTransactions.filter(t => t.type === 'income').length,
+            expense: allTransactions.filter(t => t.type === 'expense').length,
+            total: allTransactions.length
+          }
+        });
+      } else {
+        // Get current month summary from API
+        const summaryRes = await reportAPI.getSummary();
+        setSummary(summaryRes.data);
+      }
     } catch (error) {
       toast.error('Failed to load dashboard data');
       console.error(error);
@@ -91,8 +159,24 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="dashboard-header">
-        <h1>Welcome back, {user?.name}! 👋</h1>
-        <p>Here's your financial overview</p>
+        <div>
+          <h1>Welcome back, {user?.name}! 👋</h1>
+          <p>Here's your financial overview</p>
+        </div>
+        <div className="view-toggle">
+          <button 
+            className={`toggle-btn ${viewMode === 'current-month' ? 'active' : ''}`}
+            onClick={() => setViewMode('current-month')}
+          >
+            📅 This Month
+          </button>
+          <button 
+            className={`toggle-btn ${viewMode === 'all-time' ? 'active' : ''}`}
+            onClick={() => setViewMode('all-time')}
+          >
+            🌍 All Time
+          </button>
+        </div>
       </div>
 
       {/* Summary Cards */}
