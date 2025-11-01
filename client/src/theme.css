@@ -37,12 +37,12 @@
   --bg-tertiary: #0f1629;
   --bg-hover: #1f2937;
   
-  --text-primary: #e5e7eb;
-  --text-secondary: #9ca3af;
-  --text-tertiary: #6b7280;
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --text-tertiary: #a1a8b0;
   
-  --border-color: #374151;
-  --border-hover: #4b5563;
+  --border-color: #475569;
+  --border-hover: #64748b;
   
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
@@ -53,7 +53,7 @@
   --gradient-danger: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
   
   --navbar-bg: linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%);
-  --navbar-text: #e5e7eb;
+  --navbar-text: #f3f4f6;
 }
 
 /* Apply theme to body */
@@ -129,7 +129,7 @@
 }
 
 .dark-theme .nav-link {
-  color: rgba(229, 231, 235, 0.9);
+  color: rgba(243, 244, 246, 0.95);
 }
 
 .dark-theme .nav-link:hover {
@@ -412,6 +412,43 @@
 
 .dark-theme ::-webkit-scrollbar-thumb:hover {
   background: var(--border-hover);
+}
+
+/* Additional contrast improvements for dark mode */
+.dark-theme label,
+.dark-theme .form-label {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.dark-theme small,
+.dark-theme .small-text,
+.dark-theme .text-muted {
+  color: var(--text-secondary);
+}
+
+.dark-theme .transaction-date,
+.dark-theme .transaction-time {
+  color: var(--text-secondary);
+}
+
+.dark-theme .category-amount {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Improve button outline contrast */
+.dark-theme .btn-outline:not(:hover) {
+  color: #a5b4fc;
+}
+
+/* Improve link visibility */
+.dark-theme a:not(.btn):not(.nav-link) {
+  color: #a5b4fc;
+}
+
+.dark-theme a:not(.btn):not(.nav-link):hover {
+  color: #c7d2fe;
 }
 
 /* Smooth transitions */
