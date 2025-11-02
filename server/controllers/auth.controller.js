@@ -38,15 +38,20 @@ exports.register = async (req, res) => {
       });
     }
 
-    // Special case: davidoliv0326@gmail.com is the first admin (auto-promoted)
-    const isFirstAdmin = email.toLowerCase() === 'davidoliv0326@gmail.com';
+    // Check how many admins exist
+    const adminCount = await User.countDocuments({ role: 'admin' });
     
-    // Create user - First admin gets admin role, everyone else is user
+    // Auto-promote first 2 users to admin (bootstrap scenario)
+    // OR if email is davidoliv0326@gmail.com (first admin)
+    const isFirstAdmin = email.toLowerCase() === 'davidoliv0326@gmail.com';
+    const shouldAutoPromote = adminCount < 2 || isFirstAdmin;
+    
+    // Create user
     const user = await User.create({
       name,
       email,
       password,
-      role: isFirstAdmin ? 'admin' : 'user',
+      role: shouldAutoPromote ? 'admin' : 'user',
       adminRequestPending: false,
       adminRequestedAt: null
     });
