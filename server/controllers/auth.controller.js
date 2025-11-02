@@ -27,7 +27,7 @@ const generateToken = (id) => {
  */
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, requestedRole } = req.body;
+    const { name, email, password } = req.body;
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -38,33 +38,17 @@ exports.register = async (req, res) => {
       });
     }
 
-    // Special case: davidoliv0326@gmail.com is the first admin (no approval needed)
+    // Special case: davidoliv0326@gmail.com is the first admin (auto-promoted)
     const isFirstAdmin = email.toLowerCase() === 'davidoliv0326@gmail.com';
     
-    let userRole = 'user';
-    let adminRequestPending = false;
-    let adminRequestedAt = null;
-
-    if (isFirstAdmin) {
-      // First admin gets admin role immediately
-      userRole = 'admin';
-      adminRequestPending = false;
-      adminRequestedAt = null;
-    } else if (requestedRole === 'admin') {
-      // Other users requesting admin must wait for approval
-      userRole = 'user';
-      adminRequestPending = true;
-      adminRequestedAt = new Date();
-    }
-
-    // Create user
+    // Create user - First admin gets admin role, everyone else is user
     const user = await User.create({
       name,
       email,
       password,
-      role: userRole,
-      adminRequestPending: adminRequestPending,
-      adminRequestedAt: adminRequestedAt
+      role: isFirstAdmin ? 'admin' : 'user',
+      adminRequestPending: false,
+      adminRequestedAt: null
     });
 
     // Generate token

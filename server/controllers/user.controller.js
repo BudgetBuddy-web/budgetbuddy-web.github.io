@@ -223,3 +223,83 @@ exports.deleteAccount = async (req, res) => {
     });
   }
 };
+
+/**
+ * @route   POST /api/user/request-admin
+ * @desc    Request admin access (for existing users)
+ * @access  Private
+ */
+exports.requestAdminAccess = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    // Check if user is already admin
+    if (user.role === 'admin') {
+      return res.status(400).json({
+        success: false,
+        message: 'You already have admin access'
+      });
+    }
+
+    // Check if request is already pending
+    if (user.adminRequestPending) {
+      return res.status(400).json({
+        success: false,
+        message: 'You already have a pending admin request'
+      });
+    }
+
+    // Set admin request pending
+    user.adminRequestPending = true;
+    user.adminRequestedAt = new Date();
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Admin access request sent successfully. Administrators will review your request.'
+    });
+  } catch (error) {
+    console.error('Request admin access error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error sending admin request',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * @route   POST /api/user/cancel-admin-request
+ * @desc    Cancel pending admin access request
+ * @access  Private
+ */
+exports.cancelAdminRequest = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    // Check if there's a pending request
+    if (!user.adminRequestPending) {
+      return res.status(400).json({
+        success: false,
+        message: 'No pending admin request found'
+      });
+    }
+
+    // Cancel the request
+    user.adminRequestPending = false;
+    user.adminRequestedAt = null;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Admin request cancelled successfully'
+    });
+  } catch (error) {
+    console.error('Cancel admin request error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error cancelling admin request',
+      error: error.message
+    });
+  }
+};

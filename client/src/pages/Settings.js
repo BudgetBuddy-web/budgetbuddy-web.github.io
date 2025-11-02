@@ -263,6 +263,46 @@ const Settings = () => {
     }
   };
 
+  const handleRequestAdmin = async () => {
+    const confirmed = window.confirm(
+      '👑 Request Admin Access?\n\n' +
+      'Your request will be sent to existing administrators for approval.\n' +
+      'You will be notified once your request is reviewed.'
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await userAPI.requestAdminAccess();
+      toast.success('Admin request sent! Waiting for approval from administrators.');
+      // Update user data to show pending status
+      const updatedUser = { ...user, adminRequestPending: true };
+      updateUser(updatedUser);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to send admin request');
+      console.error(error);
+    }
+  };
+
+  const handleCancelAdminRequest = async () => {
+    const confirmed = window.confirm(
+      'Cancel your admin request?'
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await userAPI.cancelAdminRequest();
+      toast.info('Admin request cancelled');
+      // Update user data
+      const updatedUser = { ...user, adminRequestPending: false };
+      updateUser(updatedUser);
+    } catch (error) {
+      toast.error('Failed to cancel admin request');
+      console.error(error);
+    }
+  };
+
   return (
     <div className="settings-page">
       <div className="page-header">
@@ -475,6 +515,44 @@ const Settings = () => {
             </button>
           </form>
         </div>
+
+        {/* Admin Access Request - Only show for non-admin users */}
+        {user?.role !== 'admin' && (
+          <div className="card">
+            <h2 className="section-title">👑 Admin Access</h2>
+            {!user?.adminRequestPending ? (
+              <>
+                <p className="info-text">
+                  Request admin privileges to access advanced features like:
+                </p>
+                <ul className="info-list">
+                  <li>View all users and system analytics</li>
+                  <li>Approve admin access requests</li>
+                  <li>Access admin dashboard</li>
+                  <li>Manage system settings</li>
+                </ul>
+                <button 
+                  className="btn btn-primary"
+                  onClick={handleRequestAdmin}
+                >
+                  👑 Request Admin Access
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="alert alert-warning" style={{ marginBottom: '1rem' }}>
+                  ⏳ Your admin request is pending approval from administrators.
+                </div>
+                <button 
+                  className="btn btn-secondary"
+                  onClick={handleCancelAdminRequest}
+                >
+                  Cancel Request
+                </button>
+              </>
+            )}
+          </div>
+        )}
 
         {/* Delete Account */}
         <div className="card danger-zone">

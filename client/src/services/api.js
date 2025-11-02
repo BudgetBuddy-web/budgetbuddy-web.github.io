@@ -90,7 +90,9 @@ export const userAPI = {
   updateProfile: (data) => api.put('/user/profile', data),
   updateBudget: (data) => api.put('/user/budget', data),
   updateSettings: (data) => api.put('/user/settings', data),
-  deleteAccount: () => api.delete('/user/account')
+  deleteAccount: () => api.delete('/user/account'),
+  requestAdminAccess: () => api.post('/user/request-admin'),
+  cancelAdminRequest: () => api.post('/user/cancel-admin-request')
 };
 
 export default api;
