@@ -147,25 +147,25 @@
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #e1e8ed;
-  color: #333;
+  color: #000000;
 }
 
 .transactions-section .transactions-table th {
   background: #f8f9fa;
   font-weight: 600;
-  color: #1a1a2e;
+  color: #000000;
 }
 
 /* Dark theme support */
 .dark-theme .transactions-section .transactions-table th,
 .dark-theme .transactions-section .transactions-table td {
   border-bottom: 1px solid #475569;
-  color: #f3f4f6;
+  color: #ffffff;
 }
 
 .dark-theme .transactions-section .transactions-table th {
   background: #16213e;
-  color: #f3f4f6;
+  color: #ffffff;
 }
 
 .transactions-section .transactions-table tbody tr:hover {
@@ -197,23 +197,23 @@
 .transactions-section .total-row {
   font-weight: 600;
   background: #f8f9fa;
-  color: #1a1a2e;
+  color: #000000;
 }
 
 .dark-theme .transactions-section .total-row {
   background: #16213e;
-  color: #f3f4f6;
+  color: #ffffff;
 }
 
 .transactions-section .total-row.highlight {
   background: #e3f2fd;
   font-size: 16px;
-  color: #1565c0;
+  color: #000000;
 }
 
 .dark-theme .transactions-section .total-row.highlight {
   background: #1e3a8a;
-  color: #93c5fd;
+  color: #ffffff;
 }
 
 /* Print Styles */
