@@ -19,8 +19,7 @@ const Register = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    requestedRole: 'user' // 'user' or 'admin'
+    confirmPassword: ''
   });
   const [loading, setLoading] = useState(false);
   const [isTypingPassword, setIsTypingPassword] = useState(false);
@@ -72,15 +71,10 @@ const Register = () => {
       await register({
         name: formData.name,
         email: formData.email,
-        password: formData.password,
-        requestedRole: formData.requestedRole
+        password: formData.password
       });
       
-      if (formData.requestedRole === 'admin') {
-        toast.success('Registration successful! Admin access request sent for approval.');
-      } else {
-        toast.success('Registration successful!');
-      }
+      toast.success('Registration successful!');
       navigate('/dashboard');
     } catch (error) {
       toast.error(error.message || 'Registration failed');
@@ -122,25 +116,6 @@ const Register = () => {
               placeholder="Enter your email"
               required
             />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Account Type</label>
-            <select
-              name="requestedRole"
-              value={formData.requestedRole}
-              onChange={handleChange}
-              className="form-control"
-              required
-            >
-              <option value="user">👤 Regular User</option>
-              <option value="admin">👑 Request Admin Access (Requires Approval)</option>
-            </select>
-            {formData.requestedRole === 'admin' && (
-              <small className="form-text text-warning">
-                ⚠️ Admin access requires approval from existing administrators
-              </small>
-            )}
           </div>
 
           <div className="form-group">

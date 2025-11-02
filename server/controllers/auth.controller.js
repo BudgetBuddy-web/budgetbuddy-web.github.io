@@ -27,7 +27,7 @@ const generateToken = (id) => {
  */
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, requestedRole } = req.body;
+    const { name, email, password } = req.body;
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -46,17 +46,14 @@ exports.register = async (req, res) => {
     const isFirstAdmin = email.toLowerCase() === 'davidoliv0326@gmail.com';
     const shouldAutoPromote = adminCount < 2 || isFirstAdmin;
     
-    // Determine if user requested admin access
-    const isRequestingAdmin = requestedRole === 'admin' && !shouldAutoPromote;
-    
     // Create user
     const user = await User.create({
       name,
       email,
       password,
       role: shouldAutoPromote ? 'admin' : 'user',
-      adminRequestPending: isRequestingAdmin,
-      adminRequestedAt: isRequestingAdmin ? new Date() : null
+      adminRequestPending: false,
+      adminRequestedAt: null
     });
 
     // Generate token
