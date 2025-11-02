@@ -123,7 +123,8 @@ export const AssistantProvider = ({ children }) => {
       
       return () => clearTimeout(timer);
     }
-  }, [user]); // Remove calculateProgress from dependencies to prevent infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]); // calculateProgress excluded to prevent infinite loop
 
   // Set assistant mood and message
   const react = useCallback((newMood, newMessage) => {

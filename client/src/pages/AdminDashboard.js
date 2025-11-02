@@ -68,6 +68,7 @@ const AdminDashboard = () => {
   // Fetch admin statistics
   useEffect(() => {
     fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeRange, selectedMonth, selectedYear]);
 
   const fetchStats = async () => {

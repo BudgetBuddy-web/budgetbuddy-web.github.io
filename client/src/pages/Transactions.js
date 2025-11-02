@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Button, Modal, Form, Badge } from 'react-bootstrap';
 import { transactionAPI } from '../services/api';
 import { useAssistant } from '../contexts/AssistantContext';
 import { toast } from 'react-toastify';
