@@ -19,7 +19,8 @@ const Register = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: 'user'
   });
   const [loading, setLoading] = useState(false);
   const [isTypingPassword, setIsTypingPassword] = useState(false);
@@ -71,7 +72,8 @@ const Register = () => {
       await register({
         name: formData.name,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        role: formData.role
       });
       toast.success('Registration successful!');
       navigate('/dashboard');
@@ -115,6 +117,23 @@ const Register = () => {
               placeholder="Enter your email"
               required
             />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Role</label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="form-control"
+              required
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+            <small className="form-text text-muted">
+              Select 'Admin' for full management access, 'User' for personal budget tracking
+            </small>
           </div>
 
           <div className="form-group">
