@@ -57,8 +57,25 @@ const AdminDashboard = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   
-  // Detect theme for chart colors
-  const isDarkTheme = document.body.classList.contains('dark-theme');
+  // Detect theme for chart colors with reactive state
+  const [isDarkTheme, setIsDarkTheme] = useState(
+    document.body.classList.contains('dark-theme')
+  );
+  
+  // Update theme detection when theme changes
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDarkTheme(document.body.classList.contains('dark-theme'));
+    });
+    
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    return () => observer.disconnect();
+  }, []);
+  
   const textColor = isDarkTheme ? '#ffffff' : '#000000';
   const gridColor = isDarkTheme ? '#475569' : '#e1e8ed';
 

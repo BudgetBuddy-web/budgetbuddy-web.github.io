@@ -3,7 +3,7 @@
  * Lazy-loaded charts to improve initial load performance
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, PointElement, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Pie, Bar } from 'react-chartjs-2';
 
@@ -11,8 +11,25 @@ import { Pie, Bar } from 'react-chartjs-2';
 ChartJS.register(ArcElement, CategoryScale, LinearScale, PointElement, BarElement, Title, Tooltip, Legend);
 
 const DashboardCharts = ({ categoryBreakdown, totalIncome, totalExpenses }) => {
-  // Detect theme for chart colors
-  const isDarkTheme = document.body.classList.contains('dark-theme');
+  // Detect theme for chart colors with reactive state
+  const [isDarkTheme, setIsDarkTheme] = useState(
+    document.body.classList.contains('dark-theme')
+  );
+  
+  // Update theme detection when theme changes
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDarkTheme(document.body.classList.contains('dark-theme'));
+    });
+    
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    return () => observer.disconnect();
+  }, []);
+  
   const textColor = isDarkTheme ? '#ffffff' : '#000000';
   const gridColor = isDarkTheme ? '#475569' : '#e1e8ed';
   
