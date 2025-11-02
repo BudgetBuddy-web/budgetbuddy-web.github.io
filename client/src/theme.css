@@ -421,6 +421,13 @@
   font-weight: 500;
 }
 
+/* Light theme text utilities */
+.light-theme small,
+.light-theme .small-text,
+.light-theme .text-muted {
+  color: #6c757d;
+}
+
 .dark-theme small,
 .dark-theme .small-text,
 .dark-theme .text-muted {
@@ -451,6 +458,28 @@
   color: #c7d2fe;
 }
 
+/* Bootstrap Text Utility Classes */
+/* Light Theme */
+.text-primary { color: #1a1a2e !important; }
+.text-secondary { color: #6c757d !important; }
+.text-success { color: #28a745 !important; }
+.text-danger { color: #dc3545 !important; }
+.text-warning { color: #ffc107 !important; }
+.text-info { color: #17a2b8 !important; }
+.text-light { color: #f8f9fa !important; }
+.text-dark { color: #1a1a2e !important; }
+.text-white { color: #ffffff !important; }
+
+/* Dark Theme Text Overrides */
+.dark-theme .text-primary { color: #f3f4f6 !important; }
+.dark-theme .text-secondary { color: #d1d5db !important; }
+.dark-theme .text-success { color: #10b981 !important; }
+.dark-theme .text-danger { color: #ef4444 !important; }
+.dark-theme .text-warning { color: #fbbf24 !important; }
+.dark-theme .text-info { color: #06b6d4 !important; }
+.dark-theme .text-light { color: #e5e7eb !important; }
+.dark-theme .text-dark { color: #1a1a2e !important; }
+
 /* Smooth transitions */
 * {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -460,3 +489,4 @@
 .preload * {
   transition: none !important;
 }
+

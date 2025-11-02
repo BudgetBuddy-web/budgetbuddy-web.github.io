@@ -10,12 +10,20 @@
 .page-header h1 {
   font-size: 32px;
   margin-bottom: 8px;
-  color: #333;
+  color: #1a1a2e;
+}
+
+.dark-theme .page-header h1 {
+  color: #f3f4f6;
 }
 
 .page-header p {
   color: #666;
   font-size: 16px;
+}
+
+.dark-theme .page-header p {
+  color: #d1d5db;
 }
 
 .table-responsive {
@@ -32,8 +40,14 @@
   padding: 16px;
   background: #f8f9fa;
   font-weight: 600;
-  color: #333;
+  color: #1a1a2e;
   border-bottom: 2px solid #e1e8ed;
+}
+
+.dark-theme .transactions-table th {
+  background: #16213e;
+  color: #f3f4f6;
+  border-bottom: 2px solid #475569;
 }
 
 .transactions-table th.sortable {
@@ -47,6 +61,11 @@
   color: #667eea;
 }
 
+.dark-theme .transactions-table th.sortable:hover {
+  background: #1f2937;
+  color: #93c5fd;
+}
+
 .transactions-table th.sortable:active {
   transform: scale(0.98);
 }
@@ -54,6 +73,12 @@
 .transactions-table td {
   padding: 16px;
   border-bottom: 1px solid #e1e8ed;
+  color: #1a1a2e;
+}
+
+.dark-theme .transactions-table td {
+  border-bottom: 1px solid #475569;
+  color: #f3f4f6;
 }
 
 .badge {
