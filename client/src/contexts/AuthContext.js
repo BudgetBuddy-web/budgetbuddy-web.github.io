@@ -21,17 +21,23 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
+  const logout = useCallback(() => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem('token');
+  }, []);
+
   const loadUser = useCallback(async () => {
     try {
       const response = await authAPI.getMe();
-      setUser(response.data.data.user);
+      setUser(response.data.user);
     } catch (error) {
       console.error('Load user error:', error);
       logout();
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [logout]);
 
   useEffect(() => {
     if (token) {
@@ -66,12 +72,6 @@ export const AuthProvider = ({ children }) => {
     setToken(token);
     localStorage.setItem('token', token);
     return response;
-  };
-
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem('token');
   };
 
   const updateUser = (userData) => {
