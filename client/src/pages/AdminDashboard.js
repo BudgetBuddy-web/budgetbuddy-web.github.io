@@ -281,6 +281,9 @@ const AdminDashboard = () => {
     try {
       toast.info('Generating PDF report with charts...');
       
+      // Wait a bit for charts to fully render
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
@@ -289,12 +292,19 @@ const AdminDashboard = () => {
       // Add header
       pdf.setFontSize(24);
       pdf.setTextColor(147, 51, 234);
-      pdf.text('📊 BudgetBuddy Analytics Report', pageWidth / 2, yPosition, { align: 'center' });
+      pdf.text('BudgetBuddy Analytics Report', pageWidth / 2, yPosition, { align: 'center' });
       
       yPosition += 10;
       pdf.setFontSize(10);
       pdf.setTextColor(100, 100, 100);
-      pdf.text(`Generated on: ${new Date().toLocaleString()}`, pageWidth / 2, yPosition, { align: 'center' });
+      const formattedDate = new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      pdf.text(`Generated on: ${formattedDate}`, pageWidth / 2, yPosition, { align: 'center' });
       
       yPosition += 15;
 
@@ -349,7 +359,12 @@ const AdminDashboard = () => {
       const registrationChartElement = document.getElementById('registration-chart');
       if (registrationChartElement) {
         try {
-          const canvas = await html2canvas(registrationChartElement, { scale: 2 });
+          const canvas = await html2canvas(registrationChartElement, { 
+            scale: 2,
+            backgroundColor: '#ffffff',
+            logging: false,
+            useCORS: true
+          });
           const imgData = canvas.toDataURL('image/png');
           
           pdf.setFontSize(14);
@@ -358,7 +373,7 @@ const AdminDashboard = () => {
           yPosition += 5;
           
           const imgWidth = pageWidth - 40;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          const imgHeight = Math.min((canvas.height * imgWidth) / canvas.width, 80);
           
           if (yPosition + imgHeight > pageHeight - 20) {
             pdf.addPage();
@@ -369,6 +384,10 @@ const AdminDashboard = () => {
           yPosition += imgHeight + 10;
         } catch (error) {
           console.error('Error capturing registration chart:', error);
+          pdf.setFontSize(10);
+          pdf.setTextColor(200, 0, 0);
+          pdf.text('Chart could not be rendered', 20, yPosition);
+          yPosition += 10;
         }
       }
 
@@ -382,16 +401,21 @@ const AdminDashboard = () => {
       const activityChartElement = document.getElementById('activity-chart');
       if (activityChartElement) {
         try {
-          const canvas = await html2canvas(activityChartElement, { scale: 2 });
+          const canvas = await html2canvas(activityChartElement, { 
+            scale: 2,
+            backgroundColor: '#ffffff',
+            logging: false,
+            useCORS: true
+          });
           const imgData = canvas.toDataURL('image/png');
           
           pdf.setFontSize(14);
           pdf.setTextColor(0, 0, 0);
-          pdf.text('Activity Distribution', 20, yPosition);
+          pdf.text('Login Frequency Distribution', 20, yPosition);
           yPosition += 5;
           
           const imgWidth = pageWidth - 40;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          const imgHeight = Math.min((canvas.height * imgWidth) / canvas.width, 80);
           
           if (yPosition + imgHeight > pageHeight - 20) {
             pdf.addPage();
@@ -402,6 +426,10 @@ const AdminDashboard = () => {
           yPosition += imgHeight + 10;
         } catch (error) {
           console.error('Error capturing activity chart:', error);
+          pdf.setFontSize(10);
+          pdf.setTextColor(200, 0, 0);
+          pdf.text('Chart could not be rendered', 20, yPosition);
+          yPosition += 10;
         }
       }
 
@@ -409,7 +437,12 @@ const AdminDashboard = () => {
       const pieChartElement = document.getElementById('pie-chart');
       if (pieChartElement) {
         try {
-          const canvas = await html2canvas(pieChartElement, { scale: 2 });
+          const canvas = await html2canvas(pieChartElement, { 
+            scale: 2,
+            backgroundColor: '#ffffff',
+            logging: false,
+            useCORS: true
+          });
           const imgData = canvas.toDataURL('image/png');
           
           if (yPosition > pageHeight - 100) {
@@ -419,16 +452,20 @@ const AdminDashboard = () => {
           
           pdf.setFontSize(14);
           pdf.setTextColor(0, 0, 0);
-          pdf.text('User Distribution', 20, yPosition);
+          pdf.text('User Activity Status', 20, yPosition);
           yPosition += 5;
           
-          const imgWidth = (pageWidth - 40) / 2;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          const imgWidth = (pageWidth - 40) / 1.5;
+          const imgHeight = Math.min((canvas.height * imgWidth) / canvas.width, 80);
           
           pdf.addImage(imgData, 'PNG', pageWidth / 2 - imgWidth / 2, yPosition, imgWidth, imgHeight);
           yPosition += imgHeight + 10;
         } catch (error) {
           console.error('Error capturing pie chart:', error);
+          pdf.setFontSize(10);
+          pdf.setTextColor(200, 0, 0);
+          pdf.text('Chart could not be rendered', 20, yPosition);
+          yPosition += 10;
         }
       }
 
