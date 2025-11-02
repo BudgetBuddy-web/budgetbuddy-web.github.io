@@ -5,6 +5,7 @@
  */
 
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 import { useAssistant } from '../contexts/AssistantContext';
 import { transactionAPI, reportAPI } from '../services/api';

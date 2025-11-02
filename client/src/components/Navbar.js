@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Navbar as BSNavbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 import './Navbar.css';
 
