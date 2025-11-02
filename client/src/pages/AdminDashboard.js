@@ -56,6 +56,11 @@ const AdminDashboard = () => {
   const [timeRange, setTimeRange] = useState('month'); // 'week', 'month', 'year', 'all'
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  
+  // Detect theme for chart colors
+  const isDarkTheme = document.body.classList.contains('dark-theme');
+  const textColor = isDarkTheme ? '#ffffff' : '#000000';
+  const gridColor = isDarkTheme ? '#475569' : '#e1e8ed';
 
   // Redirect if not admin
   useEffect(() => {
@@ -492,13 +497,43 @@ const AdminDashboard = () => {
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          color: textColor,
+          font: {
+            size: 12,
+            weight: '500'
+          }
+        }
+      },
+      title: {
+        display: false
       }
     },
     scales: {
+      x: {
+        ticks: {
+          color: textColor,
+          font: {
+            size: 11
+          }
+        },
+        grid: {
+          color: gridColor,
+          display: true
+        }
+      },
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 1
+          stepSize: 1,
+          color: textColor,
+          font: {
+            size: 11
+          }
+        },
+        grid: {
+          color: gridColor,
+          display: true
         }
       }
     }
@@ -510,6 +545,21 @@ const AdminDashboard = () => {
     plugins: {
       legend: {
         position: 'bottom',
+        labels: {
+          color: textColor,
+          font: {
+            size: 12,
+            weight: '500'
+          },
+          padding: 15
+        }
+      },
+      tooltip: {
+        backgroundColor: isDarkTheme ? '#16213e' : '#ffffff',
+        titleColor: textColor,
+        bodyColor: textColor,
+        borderColor: gridColor,
+        borderWidth: 1
       }
     }
   };
