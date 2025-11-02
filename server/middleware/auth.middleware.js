@@ -56,4 +56,37 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+/**
+ * Require Admin Role
+ * Middleware to check if user has admin role
+ */
+const requireAdmin = async (req, res, next) => {
+  try {
+    // User should already be authenticated via protect middleware
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized, please login first'
+      });
+    }
+
+    // Check if user has admin role
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Admin privileges required.'
+      });
+    }
+
+    next();
+  } catch (error) {
+    console.error('Admin check error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error checking admin privileges',
+      error: error.message
+    });
+  }
+};
+
+module.exports = { protect, requireAdmin };
