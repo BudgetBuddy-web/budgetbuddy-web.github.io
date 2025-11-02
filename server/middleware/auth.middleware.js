@@ -40,6 +40,11 @@ const protect = async (req, res, next) => {
         });
       }
 
+      // Update lastActivity timestamp (non-blocking)
+      User.findByIdAndUpdate(decoded.id, { lastActivity: new Date() }).catch(err => 
+        console.error('Failed to update lastActivity:', err)
+      );
+
       next();
     } catch (error) {
       return res.status(401).json({

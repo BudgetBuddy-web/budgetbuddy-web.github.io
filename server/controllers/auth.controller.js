@@ -27,7 +27,15 @@ const generateToken = (id) => {
  */
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, acceptedTerms } = req.body;
+
+    // Validate terms acceptance
+    if (!acceptedTerms) {
+      return res.status(400).json({
+        success: false,
+        message: 'You must accept the terms and conditions to register'
+      });
+    }
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -53,7 +61,10 @@ exports.register = async (req, res) => {
       password,
       role: shouldAutoPromote ? 'admin' : 'user',
       adminRequestPending: false,
-      adminRequestedAt: null
+      adminRequestedAt: null,
+      acceptedTerms: true,
+      termsAcceptedAt: new Date(),
+      lastActivity: new Date()
     });
 
     // Generate token

@@ -39,13 +39,33 @@ export const AuthProvider = ({ children }) => {
     }
   }, [logout]);
 
+  const refreshUser = useCallback(async () => {
+    if (token) {
+      try {
+        const response = await authAPI.getMe();
+        setUser(response.data.user);
+        return response.data.user;
+      } catch (error) {
+        console.error('Refresh user error:', error);
+        return null;
+      }
+    }
+  }, [token]);
+
   useEffect(() => {
     if (token) {
       loadUser();
+      
+      // Auto-refresh user data every 30 seconds to catch role changes
+      const refreshInterval = setInterval(() => {
+        refreshUser();
+      }, 30000); // 30 seconds
+
+      return () => clearInterval(refreshInterval);
     } else {
       setLoading(false);
     }
-  }, [token, loadUser]);
+  }, [token, loadUser, refreshUser]);
 
   const login = async (credentials) => {
     const response = await authAPI.login(credentials);
@@ -87,6 +107,7 @@ export const AuthProvider = ({ children }) => {
     googleLogin,
     logout,
     updateUser,
+    refreshUser,
     isAuthenticated: !!user
   };
 

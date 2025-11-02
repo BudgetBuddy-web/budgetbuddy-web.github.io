@@ -168,6 +168,48 @@
   margin-right: 0.5rem;
 }
 
+/* Table Section Headers */
+.table-section {
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px 15px 0 0;
+  border-bottom: 3px solid #667eea;
+  margin-bottom: 0;
+}
+
+.section-header h2 {
+  margin: 0;
+  color: #667eea;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.section-header p {
+  margin: 0.5rem 0 0 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Inactive User Row Highlight */
+.inactive-user {
+  background-color: #fff5f5 !important;
+  border-left: 4px solid #dc3545;
+}
+
+.inactive-user:hover {
+  background-color: #ffe5e5 !important;
+}
+
+/* Sortable Column Headers */
+.users-table thead th[style*="cursor: pointer"]:hover {
+  background-color: #f0f0f0;
+  transition: background-color 0.2s;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .admin-users-page .page-header {
