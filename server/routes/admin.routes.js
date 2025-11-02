@@ -14,7 +14,10 @@ const {
   deleteUser,
   getAllTransactions,
   deleteTransaction,
-  getSystemStats
+  getSystemStats,
+  getAdminRequests,
+  approveAdminRequest,
+  rejectAdminRequest
 } = require('../controllers/admin.controller');
 
 // All routes require authentication AND admin role
@@ -34,5 +37,10 @@ router.delete('/transactions/:id', deleteTransaction);
 
 // System statistics
 router.get('/stats', getSystemStats);
+
+// Admin request management
+router.get('/requests', getAdminRequests);
+router.put('/requests/:id/approve', approveAdminRequest);
+router.put('/requests/:id/reject', rejectAdminRequest);
 
 module.exports = router;

@@ -1,0 +1,240 @@
+/* Admin Requests Page Styles */
+
+.admin-requests {
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.requests-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.requests-header h1 {
+  margin: 0;
+  color: #9333ea;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.requests-header .text-muted {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.requests-card,
+.no-requests-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.requests-card .card-header {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  border-bottom: 2px solid #9333ea;
+  padding: 1.25rem;
+}
+
+.requests-card .card-header h5 {
+  margin: 0;
+  color: #1f2937;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+
+.no-requests-card {
+  margin-top: 2rem;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  color: #22c55e;
+  margin-bottom: 1rem;
+}
+
+.no-requests-card h3 {
+  color: #1f2937;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.requests-table {
+  margin-bottom: 0;
+}
+
+.requests-table thead {
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+.requests-table thead th {
+  color: #4b5563;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e5e7eb;
+  padding: 1rem;
+}
+
+.requests-table tbody tr {
+  transition: all 0.2s;
+}
+
+.requests-table tbody tr:hover {
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+.requests-table tbody td {
+  vertical-align: middle;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #9333ea;
+  object-fit: cover;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-buttons .btn {
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.action-buttons .btn-success {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border: none;
+}
+
+.action-buttons .btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+}
+
+.action-buttons .btn-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: none;
+}
+
+.action-buttons .btn-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.action-buttons .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.alert-info {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #60a5fa;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.alert-info .alert-heading {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+/* Loading State */
+.admin-requests .spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3em;
+}
+
+.text-purple {
+  color: #9333ea !important;
+}
+
+/* Badge Styles */
+.badge {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .requests-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .requests-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .requests-header .btn {
+    width: 100%;
+  }
+
+  .requests-table {
+    font-size: 0.85rem;
+  }
+
+  .requests-table thead th,
+  .requests-table tbody td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .action-buttons .btn {
+    width: 100%;
+    font-size: 0.85rem;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.requests-card,
+.no-requests-card {
+  animation: fadeIn 0.5s ease-out;
+}

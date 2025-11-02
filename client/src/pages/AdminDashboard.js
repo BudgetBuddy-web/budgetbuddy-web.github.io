@@ -46,6 +46,7 @@ const AdminDashboard = () => {
     activeUsers: 0,
     inactiveUsers: 0,
     newUsersThisMonth: 0,
+    pendingAdminRequests: 0,
     registrationData: [],
     loginData: [],
     activityData: []
@@ -110,11 +111,15 @@ const AdminDashboard = () => {
       // Activity distribution
       const activityData = calculateActivityDistribution(users);
 
+      // Count pending admin requests
+      const pendingRequests = users.filter(u => u.adminRequestPending === true).length;
+
       setStats({
         totalUsers: users.length,
         activeUsers: activeUsers.length,
         inactiveUsers: users.length - activeUsers.length,
         newUsersThisMonth: filteredUsers.length,
+        pendingAdminRequests: pendingRequests,
         registrationData,
         loginData,
         activityData
@@ -585,6 +590,18 @@ const AdminDashboard = () => {
             <Card.Body>
               <h5>⚡ Quick Actions</h5>
               <div className="action-buttons">
+                <Button 
+                  variant="outline-warning" 
+                  onClick={() => navigate('/admin/requests')}
+                  className="position-relative"
+                >
+                  👑 Admin Requests
+                  {stats.pendingAdminRequests > 0 && (
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                      {stats.pendingAdminRequests}
+                    </span>
+                  )}
+                </Button>
                 <Button 
                   variant="outline-primary" 
                   onClick={() => navigate('/admin/users')}

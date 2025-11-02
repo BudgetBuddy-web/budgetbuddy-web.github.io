@@ -372,4 +372,117 @@ exports.getSystemStats = async (req, res) => {
   }
 };
 
+/**
+ * @route   GET /api/admin/requests
+ * @desc    Get all pending admin requests (admin only)
+ * @access  Private/Admin
+ */
+exports.getAdminRequests = async (req, res) => {
+  try {
+    const pendingRequests = await User.find({ 
+      adminRequestPending: true,
+      role: 'user'
+    }).select('-password').sort({ adminRequestedAt: -1 });
+
+    res.json({
+      success: true,
+      data: {
+        requests: pendingRequests,
+        count: pendingRequests.length
+      }
+    });
+  } catch (error) {
+    console.error('Get admin requests error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching admin requests',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * @route   PUT /api/admin/requests/:id/approve
+ * @desc    Approve admin request (admin only)
+ * @access  Private/Admin
+ */
+exports.approveAdminRequest = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (!user.adminRequestPending) {
+      return res.status(400).json({
+        success: false,
+        message: 'No pending admin request for this user'
+      });
+    }
+
+    user.role = 'admin';
+    user.adminRequestPending = false;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: `${user.name} has been promoted to admin`,
+      data: { user }
+    });
+  } catch (error) {
+    console.error('Approve admin request error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error approving admin request',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * @route   PUT /api/admin/requests/:id/reject
+ * @desc    Reject admin request (admin only)
+ * @access  Private/Admin
+ */
+exports.rejectAdminRequest = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (!user.adminRequestPending) {
+      return res.status(400).json({
+        success: false,
+        message: 'No pending admin request for this user'
+      });
+    }
+
+    user.adminRequestPending = false;
+    user.adminRequestedAt = null;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: `Admin request for ${user.name} has been rejected`,
+      data: { user }
+    });
+  } catch (error) {
+    console.error('Reject admin request error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error rejecting admin request',
+      error: error.message
+    });
+  }
+};
+
 module.exports = exports;

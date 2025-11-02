@@ -27,7 +27,7 @@ const generateToken = (id) => {
  */
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, requestAdminRole } = req.body;
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -38,12 +38,14 @@ exports.register = async (req, res) => {
       });
     }
 
-    // Create user (always as 'user' role, admins must be created manually)
+    // Create user (always as 'user' role, admins must be approved)
     const user = await User.create({
       name,
       email,
       password,
-      role: 'user' // Force all registrations to be normal users
+      role: 'user', // Force all registrations to be normal users
+      adminRequestPending: requestAdminRole || false,
+      adminRequestedAt: requestAdminRole ? new Date() : null
     });
 
     // Generate token

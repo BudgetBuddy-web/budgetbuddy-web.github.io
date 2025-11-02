@@ -26,6 +26,14 @@ const userSchema = new mongoose.Schema({
     default: 'user',
     required: true
   },
+  adminRequestPending: {
+    type: Boolean,
+    default: false
+  },
+  adminRequestedAt: {
+    type: Date,
+    default: null
+  },
   password: {
     type: String,
     minlength: [6, 'Password must be at least 6 characters'],

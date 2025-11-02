@@ -19,7 +19,8 @@ const Register = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    requestAdminRole: false
   });
   const [loading, setLoading] = useState(false);
   const [isTypingPassword, setIsTypingPassword] = useState(false);
@@ -71,9 +72,16 @@ const Register = () => {
       await register({
         name: formData.name,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        requestAdminRole: formData.requestAdminRole
       });
-      toast.success('Registration successful!');
+      
+      if (formData.requestAdminRole) {
+        toast.success('Account created! Admin request sent for approval.');
+      } else {
+        toast.success('Registration successful!');
+      }
+      
       navigate('/dashboard');
     } catch (error) {
       toast.error(error.message || 'Registration failed');
@@ -160,6 +168,22 @@ const Register = () => {
               >
                 {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
               </button>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <div className="form-check">
+              <input
+                type="checkbox"
+                name="requestAdminRole"
+                id="requestAdminRole"
+                checked={formData.requestAdminRole}
+                onChange={(e) => setFormData(prev => ({ ...prev, requestAdminRole: e.target.checked }))}
+                className="form-check-input"
+              />
+              <label className="form-check-label" htmlFor="requestAdminRole">
+                Request Admin Access (Requires approval from existing admins)
+              </label>
             </div>
           </div>
 
