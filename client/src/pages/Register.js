@@ -20,7 +20,7 @@ const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    requestAdminRole: false
+    requestedRole: 'user' // 'user' or 'admin'
   });
   const [loading, setLoading] = useState(false);
   const [isTypingPassword, setIsTypingPassword] = useState(false);
@@ -73,10 +73,10 @@ const Register = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        requestAdminRole: formData.requestAdminRole
+        requestedRole: formData.requestedRole
       });
       
-      if (formData.requestAdminRole) {
+      if (formData.requestedRole === 'admin') {
         toast.success('Account created! Admin request sent for approval.');
       } else {
         toast.success('Registration successful!');
@@ -172,19 +172,22 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <div className="form-check">
-              <input
-                type="checkbox"
-                name="requestAdminRole"
-                id="requestAdminRole"
-                checked={formData.requestAdminRole}
-                onChange={(e) => setFormData(prev => ({ ...prev, requestAdminRole: e.target.checked }))}
-                className="form-check-input"
-              />
-              <label className="form-check-label" htmlFor="requestAdminRole">
-                Request Admin Access (Requires approval from existing admins)
-              </label>
-            </div>
+            <label className="form-label">Account Type</label>
+            <select
+              name="requestedRole"
+              value={formData.requestedRole}
+              onChange={handleChange}
+              className="form-control"
+              required
+            >
+              <option value="user">👤 User (Regular Account)</option>
+              <option value="admin">👑 Admin (Requires Approval)</option>
+            </select>
+            {formData.requestedRole === 'admin' && (
+              <small className="form-text text-muted" style={{ marginTop: '8px', display: 'block' }}>
+                ⚠️ Admin access requires approval from existing administrators
+              </small>
+            )}
           </div>
 
           <button 
