@@ -31,7 +31,7 @@ const DashboardCharts = ({ categoryBreakdown, totalIncome, totalExpenses }) => {
   }, []);
   
   const textColor = isDarkTheme ? '#ffffff' : '#000000';
-  const gridColor = isDarkTheme ? '#475569' : '#e1e8ed';
+  const gridColor = isDarkTheme ? '#69638aff' : '#e1e8ed';
   
   // Pie Chart Data (Category Breakdown)
   const pieData = {
