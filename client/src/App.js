@@ -33,6 +33,7 @@ const Reports = lazy(() => import('./pages/Reports'));
 const Settings = lazy(() => import('./pages/Settings'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const AdminRequests = lazy(() => import('./pages/AdminRequests'));
+const AdminUsers = lazy(() => import('./pages/AdminUsers'));
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -71,6 +72,7 @@ function App() {
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/admin/requests" element={<AdminRequests />} />
+                    <Route path="/admin/users" element={<AdminUsers />} />
                   </Route>
                 </Route>
 
