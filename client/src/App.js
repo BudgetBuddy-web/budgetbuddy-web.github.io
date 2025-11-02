@@ -31,6 +31,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Transactions = lazy(() => import('./pages/Transactions'));
 const Reports = lazy(() => import('./pages/Reports'));
 const Settings = lazy(() => import('./pages/Settings'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -67,6 +68,7 @@ function App() {
                     <Route path="/transactions" element={<Transactions />} />
                     <Route path="/reports" element={<Reports />} />
                     <Route path="/settings" element={<Settings />} />
+                    <Route path="/admin" element={<AdminDashboard />} />
                   </Route>
                 </Route>
 
