@@ -28,7 +28,7 @@ const addRolesToUsers = async () => {
     console.log(`✅ Updated ${result.modifiedCount} users with 'user' role\n`);
 
     // Promote first user to admin (CHANGE THIS EMAIL!)
-    const adminEmail = process.env.ADMIN_EMAIL || 'your-email@example.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'david@example.com'; // Changed to David Oliver's email
     
     console.log(`🔐 Attempting to promote user: ${adminEmail}`);
     const admin = await User.findOneAndUpdate(
